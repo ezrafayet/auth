@@ -1,0 +1,40 @@
+# .gitignore
+
+# Visual Studio Code
+.vscode/
+
+# IntelliJ (and related JetBrains IDEs)
+.idea/
+*.iml
+*.ipr
+*.iws
+*.log
+
+# Other common IDE files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.sublime*
+*.orig
+*.rej
+*.sage
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+
+# Next
+.vercel/
+.next/
+
+# Output
+out/
+build/
+dist/
+
+# Environment variables
+.env
+

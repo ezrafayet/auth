@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+    proxy:
+        build: ./proxy
+        ports:
+            - '5001:80'
+    client:
+        build: ./client
+    gateway:
+        build: ./gateway
