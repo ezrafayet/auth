@@ -1,3 +1,4 @@
-FROM nginx:stable-alpine AS proxy-build
+FROM openresty/openresty:alpine AS proxy
 
-COPY ./nginx.conf /etc/nginx/nginx.conf
+#COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+COPY . /usr/local/openresty/nginx/conf

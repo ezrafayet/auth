@@ -4,8 +4,8 @@ services:
     proxy:
         build: ./proxy
         ports:
-            - '5001:80'
+            - '5050:80'
     client:
         build: ./client
-    gateway:
-        build: ./gateway
+    iam:
+        build: ./iam

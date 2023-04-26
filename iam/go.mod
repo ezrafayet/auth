@@ -1,4 +1,4 @@
-module gateway
+module iam
 
 go 1.19
 

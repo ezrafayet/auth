@@ -41,14 +41,13 @@ var proxyHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 func Start() error {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
-	})
 	r.Get("/api", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
+		w.Write([]byte("welcome1"))
 	})
-	r.Get("/api/auth/*", proxyHandler)
+	r.Get("/api/auth/v1", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome2"))
+	})
 
-	fmt.Println("Server started on port 7000")
-	return http.ListenAndServe(":7000", r)
+	fmt.Println("Server started on port 7777")
+	return http.ListenAndServe(":7777", r)
 }

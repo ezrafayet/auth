@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gateway/src/infra/httpserver"
+	"iam/src/infra/httpserver"
 	"log"
 )
 
