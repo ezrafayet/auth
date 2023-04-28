@@ -22,9 +22,8 @@
 
 ```
 docker-compose build
-docker-compose up -d
+docker-compose up
 docker-compose stop
-docker stop $(docker ps -aq)
 ```
 
 # Use cases
