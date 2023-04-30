@@ -13,38 +13,27 @@
                         +-------------------+
                                             |
                                             |    +---------+
-                                            +--->|  Core   | <-- TODO
+                                            +--->|  Core   | <-- Any services
                                                  +---------+
                                                     :8000
 ```
 
-# Getting started
+## Quick start
 
 ```
 docker-compose build
 docker-compose up
-docker-compose stop
 ```
 
-# Use cases
+## Use cases
 
-- Create a user using password (flow 1). 
-  - Variant: verification email logs in directly
-  - Variant: sends an email with a link or a code to verify the email
-  - Variant: phone login
-  - Variant: with / without recaptha
-- Create a user using magic link (flow 2)
-- OAuth2: (flow 3)
-  - Google auth (flow 3)
-  - Facebook auth (flow 4)
-  - GitHub auth (flow 5)
+Regarding users and authentication, we have the following use cases:
+- Support for password user creation / access (Password flow)
+- Support for magic link user creation / access (Magic link flow)
+- Support for OAuth2 user creation / access
+- Support for Recaptcha
+- Support for MFA
 
-- MFA
-  - Email
-  - SMS
-  - Google Authenticator
-  - Yubikey
-
-- Recaptcha
-
-- Switching between flows
+Regarding authorisations:
+- Support for role-based access control (RBAC)
+- Support for attribute-based access control (ABAC)

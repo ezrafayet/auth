@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
     proxy:
-        build: ./proxy
+        build: ./services/proxy
         ports:
             - '5050:80'
     client:
-        build: ./client
+        build: ./services/client
     iam:
-        build: ./iam
+        build: ./services/iam
