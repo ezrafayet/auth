@@ -1,4 +1,4 @@
-local _M = {}
+-- auth.lua
 
 -- Utils
 
@@ -24,21 +24,22 @@ end
 
 local _Handlers = {}
 
+function _Handlers.whoAmI ()
+    ngx.header.content_type = "application/json; charset=utf-8";
+    ngx.say("{\"status\":\"success whoAmI\"}");
+end
+
 function _Handlers.register ()
     ngx.header.content_type = "application/json; charset=utf-8";
     ngx.say("{\"status\":\"success register\"}");
 end
 
-function _Handlers.ask_email_verification (capture)
-    local user_id = capture[1]
+function _Handlers.email_verification ()
     ngx.header.content_type = "application/json; charset=utf-8";
     ngx.say("{\"status\":\"success ask email verification\"}");
 end
 
-function _Handlers.submit_email_verification (capture)
-    local user_id = capture[1]
-    local token = capture[2]
-    ngx.log(ngx.ERR, "submit_email_verification: " .. capture[1] .. " " .. capture[2])
+function _Handlers.email_verification_code ()
     ngx.header.content_type = "application/json; charset=utf-8";
     ngx.say("{\"status\":\"success submit email verification\"}");
 end
@@ -60,66 +61,13 @@ function _Handlers.logout ()
     ngx.say('{"status":"success logout"}')
 end
 
-function _Handlers.refresh_token ()
+function _Handlers.refresh ()
     ngx.header.content_type = "application/json; charset=utf-8"
     ngx.say('{"status":"success refresh"}')
 end
 
--- Router
--- NB: This router is not optimized for performance.
--- It should be replaced by a proper router.
-
-local routes = {
-    {pattern = "/api/internal/v1/auth/register", method = "POST", handler = _Handlers.register},
-    {pattern = "/api/internal/v1/auth/users/*/email-verification", method = "POST", handler = _Handlers.ask_email_verification},
-    {pattern = "/api/internal/v1/auth/users/*/email-verification/*", method = "PATCH", handler = _Handlers.submit_email_verification},
-    {pattern = "/api/internal/v1/auth/login", method = "POST", handler = _Handlers.login},
-    {pattern = "/api/internal/v1/auth/logout", method = "POST", handler = _Handlers.logout},
-    {pattern = "/api/internal/v1/auth/refresh", method = "POST", handler = _Handlers.refresh_token},
-}
-
-local function match_route(_routes, uri, method)
-    local uri_parts = {}
-    for part in string.gmatch(uri, "[^/]+") do
-        table.insert(uri_parts, part)
-    end
-    for _, route in ipairs(_routes) do
-        local route_parts = {}
-        for part in string.gmatch(route.pattern, "[^/]+") do
-            table.insert(route_parts, part)
-        end
-        if #route_parts == #uri_parts then
-            local captures = {}
-            local route_matched = true
-            for i, route_part in ipairs(route_parts) do
-                if route_part == "*" then
-                    table.insert(captures, uri_parts[i])
-                elseif route_part ~= uri_parts[i] then
-                    route_matched = false
-                    break
-                end
-            end
-            if route_matched and route.method == method then
-                return route.handler, captures
-            end
-        end
-    end
-    return nil, nil
+function _Handlers.proxy ()
+    ngx.exec("/proxy_auth")
 end
 
-function _M.router ()
-    local uri = ngx.var.uri
-    if string.sub(uri, -1) == "/" then
-        uri = string.sub(uri, 1, -2)
-    end
-    local method = ngx.req.get_method()
-    local route_handler, urlParams = match_route(routes, uri, method)
-
-    if route_handler then
-        route_handler(urlParams)
-    else
-        ngx.exec("/proxy_auth")
-    end
-end
-
-return _M
+return _Handlers
