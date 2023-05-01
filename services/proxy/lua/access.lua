@@ -3,7 +3,7 @@
 local _M = {}
 
 -- accessNeeded = user | admin
-function _M.hasAccess(accessNeeded)
+function _M.has_access(access_needed)
     ngx.say("access")
 end
 
