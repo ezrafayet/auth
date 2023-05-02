@@ -30,6 +30,7 @@ function _Handlers.whoAmI ()
 end
 
 function _Handlers.register ()
+    ngx.log(ngx.ERR, "register: ", ngx.var.x_operation_id)
     ngx.header.content_type = "application/json; charset=utf-8";
     ngx.say("{\"status\":\"success register\"}");
 end
@@ -64,10 +65,6 @@ end
 function _Handlers.refresh ()
     ngx.header.content_type = "application/json; charset=utf-8"
     ngx.say('{"status":"success refresh"}')
-end
-
-function _Handlers.proxy ()
-    ngx.exec("/proxy_auth")
 end
 
 return _Handlers
