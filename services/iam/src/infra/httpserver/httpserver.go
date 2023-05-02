@@ -41,10 +41,9 @@ var proxyHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 func Start() error {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Get("/api", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome1"))
-	})
-	r.Get("/api/auth/v1", func(w http.ResponseWriter, r *http.Request) {
+
+	r.Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("foobar header", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("welcome2"))
 	})
 

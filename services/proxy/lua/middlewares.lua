@@ -22,46 +22,70 @@ function extract_user_id_from_jwt(jwt)
     return payload.userId
 end
 
--- set_header_variables sets variables that must be
--- passed as headers to the upstream services
-function _M.set_header_variables()
-    -- Set operation ID
-    local oid = ngx.req.get_headers()["X-Operation-Id"]
+function set_headers_forwarded_for()
+    ngx.req.set_header("X-Forwarded-For", ngx.var.remote_addr)
+end
 
-    if (oid ~= nil and #oid ~= 0) then
-        ngx.var["x_operation_id"] = ngx.req.get_headers()["X-Operation-Id"]
-    else
-        ngx.var["x_operation_id"] = string.format("oid-%x", math.random(1000000, 9999999))
-    end
+function set_headers_forwarded_proto()
+    ngx.req.set_header("X-Forwarded-Proto", ngx.var.scheme)
+end
 
-    -- Set initiator ID and type
+function set_headers_content_type_options()
+    ngx.req.set_header("X-Content-Type-Options", "nosniff")
+end
+
+function set_headers_frame_options()
+    ngx.req.set_header("X-Frame-Options", "DENY")
+end
+
+function set_headers_xss_protection()
+    ngx.req.set_header("X-XSS-Protection", "1; mode=block")
+end
+
+function set_headers_request_id ()
+    ngx.req.set_header("X-Request-Id", "rid-" .. ngx.var.request_id)
+end
+
+function set_headers_initiator ()
     local cookie_access_token = ngx.var.cookie_access_token
     local api_access_token = ngx.req.get_headers()["Authorization"]
-    local initiator_type = ngx.req.get_headers()["X_Initiator_Type"]
+    local cli_request = ngx.req.get_headers()["X_Is-Cli"]
     local user_agent = ngx.req.get_headers()["User-Agent"]
+    local is_web_user_agent = user_agent and (string.find(user_agent, "Mozilla") ~= nil)
 
     if (cookie_access_token ~= nil and #cookie_access_token ~= 0) then
-        local user_id, err = extract_user_id_from_jwt(cookie_access_token)
-        -- todo: handle error
-        ngx.var["x_initiator_id"] = user_id;
-        ngx.var["x_initiator_type"] = "web";
-    elif (api_access_token ~= nil and #api_access_token ~= 0 and initiator_type ~= "cli")
-        ngx.var["x_initiator_id"] = api_access_token;
-        ngx.var["x_initiator_type"] = "api";
-    elif (initiator_type == "cli")
-        ngx.var["x_initiator_id"] = api_access_token;
-        ngx.var["x_initiator_type"] = "cli";
-    elif (user_agent ~= nil and #user_agent ~= 0)
-        ngx.var["x_initiator_id"] = "";
-        ngx.var["x_initiator_type"] = "web";
+        local user_id, _ = extract_user_id_from_jwt(cookie_access_token)
+        ngx.req.set_header("X-Initiator-Id", user_id)
+        ngx.req.set_header("X-Initiator-Type", "web")
+    elseif (api_access_token ~= nil and #api_access_token ~= 0) then
+        ngx.req.set_header("X-Initiator-Id", api_access_token)
+        if (cli_request == "true") then
+            ngx.req.set_header("X-Initiator-Type", "cli")
+        else
+            ngx.req.set_header("X-Initiator-Type", "api")
+        end
     else
-        -- consider returning an error
-        ngx.var["x_initiator_id"] = "";
-        ngx.var["x_initiator_type"] = "api";
+        ngx.req.set_header("X-Initiator-Id", "")
+        if (is_web_user_agent) then
+            ngx.req.set_header("X-Initiator-Type", "web")
+        else
+            ngx.req.set_header("X-Initiator-Type", "api")
+        end
     end
 end
 
-function _M.control_access_token()
+-- sets headers that must be passed to the upstream services
+function _M.set_headers()
+    set_headers_forwarded_for()
+    set_headers_forwarded_proto()
+    set_headers_content_type_options()
+    set_headers_frame_options()
+    set_headers_xss_protection()
+    set_headers_request_id()
+    set_headers_initiator()
+end
+
+function _M.control_access()
     -- todo
 end
 
