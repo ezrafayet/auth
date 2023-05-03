@@ -47,6 +47,11 @@ func Start() error {
 		w.Write([]byte("welcome2"))
 	})
 
+	r.Post("/api/internal/v1/auth/register", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("foobar: ", r.Header.Get("X-Request-Id"), r.Header.Get("X-Initiator-Id"), r.Header.Get("X-Initiator-Type"))
+		w.Write([]byte("welcome3"))
+	})
+
 	fmt.Println("Server started on port 7777")
 	return http.ListenAndServe(":7777", r)
 }

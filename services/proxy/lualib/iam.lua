@@ -24,22 +24,6 @@ end
 
 local _Handlers = {}
 
-function _Handlers.whoAmI ()
-    ngx.header.content_type = "application/json; charset=utf-8";
-    ngx.say("{\"status\":\"success whoAmI\"}");
-end
-
-function _Handlers.register ()
-    ngx.log(ngx.ERR, "register: ", ngx.var.x_operation_id)
-    ngx.header.content_type = "application/json; charset=utf-8";
-    ngx.say("{\"status\":\"success register\"}");
-end
-
-function _Handlers.email_verification ()
-    ngx.header.content_type = "application/json; charset=utf-8";
-    ngx.say("{\"status\":\"success ask email verification\"}");
-end
-
 function _Handlers.email_verification_code ()
     ngx.header.content_type = "application/json; charset=utf-8";
     ngx.say("{\"status\":\"success submit email verification\"}");

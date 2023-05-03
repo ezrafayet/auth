@@ -85,7 +85,7 @@ function _M.set_headers()
     set_headers_initiator()
 end
 
-function _M.control_access()
+function _M.control_access_token()
     -- todo
 end
 
