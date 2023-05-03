@@ -25,6 +25,10 @@ end
 local _Handlers = {}
 
 function _Handlers.email_verification_code ()
+    local res = ngx.location.capture("/api/proxy-iam-public", { method = ngx.HTTP_PATCH })
+    -- Process the response here, e.g., modify, log, etc.
+    --ngx.say(res.body)
+
     ngx.header.content_type = "application/json; charset=utf-8";
     ngx.say("{\"status\":\"success submit email verification\"}");
 end
