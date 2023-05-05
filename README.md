@@ -61,11 +61,11 @@ Authentication is the process of verifying the identity of a user, device, or sy
 
 We should support various authentication flows, including user access and programmatic access.
 
-1. Resource Owner Password Credentials (ROPC) Grant
-2. One-Time Password (OTP) Authentication
-3. OAuth 2.0 Flows
-4. Single Sign-On (SSO) Flows
-5. Bearer Token Authentication
+1. [Resource Owner Password Credentials (ROPC) (legacy)](documentation/authentication/ropc.md)
+2. [One-Time Password (OTP) Authentication](documentation/authentication/otp.md)
+3. [Bearer Token Authentication](documentation/authentication/bearer_token.md)
+4. Social Authentication Flows
+5. Single Sign-On (SSO) Flows
 
 Additionally, we should describe switching between user flows.
 
@@ -102,10 +102,18 @@ This section outlines various additional authentication factors and protective m
 11. Eavesdropping Attacks
 12. Insecure Direct Object References (IDOR) Attacks
 
-## Contributing
+## Zero Trust model
 
 [In progress]
 
-## Releases
+# Contributing
 
 [In progress]
+
+# Releases
+
+[In progress]
+
+# Resources
+
+- https://datatracker.ietf.org/doc/html/rfc6749
