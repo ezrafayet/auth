@@ -1,6 +1,6 @@
 [WORK IN PROGRESS]
 
-Note: this document is a draft and is subject to change. The project is young and a work in progress.
+*Note: this project is in its early stages and is a work in progress. The primary objective is to create a prototype that adheres to industry standards and best practices for implementing an authentication and authorization service. To achieve this goal, the project will heavily rely on dependency injection and an orthogonal architecture.*
 
 # Introduction
 
@@ -42,13 +42,14 @@ The following draft diagram illustrates the overall architecture of the project:
                                                     :8000
 ```
 
-## More details
+## Topics
 
 - Single origin
-- Hosting the project
 - Cookies management and life cycle
-- Logs
 - Redundancy
+- Rate limiting
+- Logs & Alerts
+- Hosting the project
 
 [In progress]
 
@@ -58,7 +59,7 @@ Authentication is the process of verifying the identity of a user, device, or sy
 
 ## Authentication flows
 
-We should support various authentication flows, including user access and programmatic access (to serve a public API).
+We should support various authentication flows, including user access and programmatic access.
 
 1. Resource Owner Password Credentials (ROPC) Grant
 2. One-Time Password (OTP) Authentication
