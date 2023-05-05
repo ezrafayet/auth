@@ -55,7 +55,7 @@ The following draft diagram illustrates the overall architecture of the project:
 
 # Authentication
 
-Authentication is the process of verifying the identity of a user, device, or system by validating their credentials, such as usernames, passwords, or tokens.
+Authentication is the process of verifying the identity of a user, device, or system. In today's digital landscape, authentication is an essential aspect of any application, encompassing a variety of modern flows and paradigms.
 
 ## Authentication flows
 
