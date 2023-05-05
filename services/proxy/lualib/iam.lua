@@ -1,4 +1,5 @@
 -- auth.lua
+-- todo: must be unit-tested
 
 -- Utils
 
@@ -8,7 +9,7 @@ end
 
 -- Services
 
-function login_service(current_timestamp, convert_timestamp_to_date)
+function get_login_cookie(current_timestamp, convert_timestamp_to_date)
     local access_token = "access_token_here"
     local refresh_token = "refresh_token_here"
 
@@ -26,21 +27,32 @@ local _Handlers = {}
 
 function _Handlers.email_verification_code ()
     local res = ngx.location.capture("/api/proxy-iam-public", { method = ngx.HTTP_PATCH })
-    -- Process the response here, e.g., modify, log, etc.
-    --ngx.say(res.body)
-
-    ngx.header.content_type = "application/json; charset=utf-8";
-    ngx.say("{\"status\":\"success submit email verification\"}");
+    if res.status >= 200 and res.status < 400 then
+        -- todo
+        ngx.status = res.status
+        ngx.say("{\"status\":\"success\"}");
+        return
+    end
+    ngx.status = res.status
+    ngx.say(res.body);
 end
 
 function _Handlers.login ()
-    local cookies, status, err = login_service(ngx.time(), ngx.cookie_time);
-    -- todo: handle error
-    ngx.header["Set-Cookie"] = cookies;
-    ngx.header.content_type = "application/json; charset=utf-8";
-    ngx.say("{\"status\":\"success login\"}");
+    local res = ngx.location.capture("/api/proxy-iam-public", { method = ngx.HTTP_POST })
+    if res.status >= 200 and res.status < 400 then
+        -- todo
+        local cookies = get_login_cookie(ngx.time(), ngx.cookie_time);
+        ngx.header["Set-Cookie"] = cookies;
+        ngx.status = res.status
+        ngx.say("{\"status\":\"success\"}");
+        return
+    end
+    ngx.status = res.status
+    ngx.say(res.body);
 end
 
+-- logout sets cookies to expire in the past
+-- it should also blacklist the refresh token
 function _Handlers.logout ()
     local expired = ngx.time() - 1
     local refresh_cookie = string.format("refresh_token=; Expires=%s; Path=/; HttpOnly; Secure", ngx.cookie_time(expired))
@@ -51,8 +63,15 @@ function _Handlers.logout ()
 end
 
 function _Handlers.refresh ()
-    ngx.header.content_type = "application/json; charset=utf-8"
-    ngx.say('{"status":"success refresh"}')
+    local res = ngx.location.capture("/api/proxy-iam-public", { method = ngx.HTTP_POST })
+    if res.status >= 200 and res.status < 300 then
+        -- todo
+        ngx.status = res.status
+        ngx.say("{\"status\":\"success\"}");
+        return
+    end
+    ngx.status = res.status
+    ngx.say(res.body);
 end
 
 return _Handlers

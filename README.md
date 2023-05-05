@@ -1,22 +1,8 @@
-# iam
+[DRAFT]
 
-[In progress]
+# IAM (Identity and Access Management)
 
-```
-                            +---------+
-                        +-->| CLient  |
-                        |   +---------+
-        +---------+     |      :3000             +---------+
-        |  Proxy  +-----+                   +--->|   IAM   |
-        +---------+     |                   |    +---------+
-           :5000        |                   |       :7777
-                        +-------------------+
-                                            |
-                                            |    +---------+
-                                            +--->|  Core   | <-- Any services
-                                                 +---------+
-                                                    :8000
-```
+"Therefore IAM" provides an authentication and authorisation solution for other services within a distributed system. It is meant to be generic and can be seamlessly integrated across multiple projects.
 
 ## Quick start
 
@@ -25,15 +11,16 @@ docker-compose build
 docker-compose up
 ```
 
-## Use cases
+## Documentation
 
-Regarding users and authentication, we have the following use cases:
-- Support for password user creation / access (Password flow)
-- Support for magic link user creation / access (Magic link flow)
-- Support for OAuth2 user creation / access
-- Support for Recaptcha
-- Support for MFA
+Read more about the architecture of the project, supported authentication flows, supported authorisation and security in the documentation.
 
-Regarding authorisations:
-- Support for role-based access control (RBAC)
-- Support for attribute-based access control (ABAC)
+[view documentation](documentation/documentation.md)
+
+## Contributing
+
+[In progress]
+
+## Releases
+
+[In progress]
