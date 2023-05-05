@@ -15,7 +15,7 @@ docker-compose up
 
 Read more about the architecture of the project, supported authentication flows, supported authorisation and security in the documentation.
 
-[view documentation](documentation/documentation.md)
+[view documentation](documentation/home.md)
 
 ## Contributing
 
