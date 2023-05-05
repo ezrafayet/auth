@@ -1,6 +1,8 @@
 [WORK IN PROGRESS]
 
-# Identity and Access Management
+Note: this document is a draft and is subject to change. The project is young and a work in progress.
+
+# Introduction
 
 "Therefore IAM" provides an authentication and authorisation solution for other services within a distributed system. It is meant to be generic and can be seamlessly integrated across multiple projects.
 
@@ -11,11 +13,93 @@ docker-compose build
 docker-compose up
 ```
 
-## Documentation
+# Architecture
 
-Read more about the architecture of the project, supported authentication flows, supported authorisation and security in the documentation.
+The project contains mainly two services:
+- The API gateway
+- The IAM service
 
-[view documentation](documentation/home.md)
+Additionally, the project includes two dummy services to facilitate its operation:
+- The Client service
+- The Core service
+
+## High level diagram
+
+The following draft diagram illustrates the overall architecture of the project:
+```
+                            +---------+
+                        +-->| CLient  |
+                        |   +---------+
+        +---------+     |      :3000             +---------+
+        |  Proxy  +-----+                   +--->|   IAM   |
+        +---------+     |                   |    +---------+
+           :5000        |                   |       :7777
+                        +-------------------+
+                                            |
+                                            |    +---------+
+                                            +--->|  Core   | <-- Any services
+                                                 +---------+
+                                                    :8000
+```
+
+## More details
+
+- Single origin
+- Hosting the project
+- Cookies management and life cycle
+- Logs
+- Redundancy
+
+[In progress]
+
+# Authentication
+
+Authentication is the process of verifying the identity of a user, device, or system by validating their credentials, such as usernames, passwords, or tokens.
+
+## Authentication flows
+
+We should support various authentication flows, including user access and programmatic access (to serve a public API).
+
+1. Resource Owner Password Credentials (ROPC) Grant
+2. One-Time Password (OTP) Authentication
+3. OAuth 2.0 Flows
+4. Single Sign-On (SSO) Flows
+5. Bearer Token Authentication
+
+Additionally, we should describe switching between user flows.
+
+# Authorisation
+
+Authorization determines the level of access or permissions a verified user has within a system, dictating what actions they can perform or resources they can access.
+
+## Authorization paradigms
+
+1. Role-based access control (RBAC)
+2. Attribute-based access control (ABAC)
+
+# Security
+
+This section outlines various additional authentication factors and protective measures to prevent specific attacks.
+
+## Additional authentication factors
+
+1. CAPTCHA
+2. Multi-Factor Authentication (MFA)
+
+## Protections about specific attacks
+
+1. Brute Force Attacks
+2. Credential Stuffing Attacks
+3. Phishing Attacks
+4. Man-in-the-middle (MITM) Attacks
+5. Cross-Site Request Forgery (CSRF) Attacks
+6. Cross-Site Scripting (XSS) Attacks
+7. SQL Injection Attacks
+8. Session Hijacking Attacks
+9. Clickjacking Attacks
+10. Denial-of-Service (DoS) Attacks
+11. Eavesdropping Attacks
+12. Insecure Direct Object References (IDOR) Attacks
 
 ## Contributing
 

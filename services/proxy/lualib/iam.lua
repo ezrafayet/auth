@@ -3,8 +3,10 @@
 
 local cjson = require "cjson"
 
-local access_token_lifetime = 900
-local refresh_token_lifetime = 259200
+-- NB: lifespan of the tokens are set regardless the lifespan of the cookies
+-- in  the future, get expiration date from the received jwt itself
+local access_token_lifetime_seconds = 900
+local refresh_token_lifetime_seconds = 259200
 
 -- Utils
 
@@ -37,8 +39,8 @@ function _Handlers.email_verification_code ()
         end
 
         local cookies = {}
-        table.insert(cookies, create_cookie("access_token", access_token, ngx.cookie_time(ngx.time() + 900)))
-        table.insert(cookies, create_cookie("refresh_token", refresh_token, ngx.cookie_time(ngx.time() + 259200)))
+        table.insert(cookies, create_cookie("access_token", access_token, ngx.cookie_time(ngx.time() + access_token_lifetime_seconds)))
+        table.insert(cookies, create_cookie("refresh_token", refresh_token, ngx.cookie_time(ngx.time() + refresh_token_lifetime_seconds)))
 
         ngx.header["Set-Cookie"] = cookies;
         ngx.status = res.status
@@ -71,8 +73,8 @@ function _Handlers.login ()
         end
 
         local cookies = {}
-        table.insert(cookies, create_cookie("access_token", access_token, ngx.cookie_time(ngx.time() + 900)))
-        table.insert(cookies, create_cookie("refresh_token", refresh_token, ngx.cookie_time(ngx.time() + 259200)))
+        table.insert(cookies, create_cookie("access_token", access_token, ngx.cookie_time(ngx.time() + access_token_lifetime_seconds)))
+        table.insert(cookies, create_cookie("refresh_token", refresh_token, ngx.cookie_time(ngx.time() + refresh_token_lifetime_seconds)))
 
         ngx.header["Set-Cookie"] = cookies;
         ngx.status = res.status
@@ -116,8 +118,8 @@ function _Handlers.refresh ()
         end
 
         local cookies = {}
-        table.insert(cookies, create_cookie("access_token", access_token, ngx.cookie_time(ngx.time() + 900)))
-        table.insert(cookies, create_cookie("refresh_token", refresh_token, ngx.cookie_time(ngx.time() + 259200)))
+        table.insert(cookies, create_cookie("access_token", access_token, ngx.cookie_time(ngx.time() + access_token_lifetime_seconds)))
+        table.insert(cookies, create_cookie("refresh_token", refresh_token, ngx.cookie_time(ngx.time() + refresh_token_lifetime_seconds)))
 
         ngx.header["Set-Cookie"] = cookies;
         ngx.status = res.status

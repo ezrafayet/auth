@@ -46,6 +46,12 @@ func Start() error {
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
+	// This endpoint is used by the API Gateway to check if the access token is valid
+	r.Get("/api/internal/v1/auth/authorize", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("headers", r.Header.Get("X-Request-Id"))
+		w.Write([]byte("{\"status\":\"success\"}"))
+	})
+
 	fmt.Println("Server started on port 7777")
 	return http.ListenAndServe(":7777", r)
 }
