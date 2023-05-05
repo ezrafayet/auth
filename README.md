@@ -1,6 +1,6 @@
-[DRAFT]
+[WORK IN PROGRESS]
 
-# IAM (Identity and Access Management)
+# Identity and Access Management
 
 "Therefore IAM" provides an authentication and authorisation solution for other services within a distributed system. It is meant to be generic and can be seamlessly integrated across multiple projects.
 
