@@ -13,37 +13,37 @@ func Start() error {
 
 	r.Get("/api/internal/v1/auth/whoami", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed whoami"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	r.Post("/api/internal/v1/auth/register", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed register"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	r.Post("/api/internal/v1/auth/users/{userId}/email-verification", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed email verification sending"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	r.Patch("/api/internal/v1/auth/users/{userId}/email-verification/{verificationCode}", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed email verification code"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	r.Post("/api/internal/v1/auth/login", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed login"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	r.Post("/api/internal/v1/auth/refresh", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed refreshing token"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	r.Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("accessed foobar"))
+		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	fmt.Println("Server started on port 7777")
