@@ -1,29 +1,31 @@
 [Back to README](../../README.md)
 
-# Resource Owner Password Credentials (ROPC) flow (legacy)
+# Resource Owner Password Credentials (ROPC) flow
 
 The Resource Owner Password Credentials (ROPC) flow is a way to exchange a user's credentials for an access token.
 
-/!\ The ROPC flow is considered deprecated by the OAuth 2.0 community due to its inherent security risks and is not recommended for new implementations. However, it is still widely used and accepted in combination with MFA. For this reason we do allow it here.
+The ROPC flow is often discouraged due to its inherent security risks. However, it is still widely used and accepted in combination with MFA, PKCE and other techniques. Therefore, it will be included in our service.
 
-# User creation
+Implementation: [LATER IMPLEMENTATION]
 
-[in progress]
+[//]: # (# User creation)
 
-# Email validation
+[//]: # ([in progress])
 
-[in progress]
+[//]: # (# Email validation)
 
-# User login
+[//]: # ([in progress])
 
-[in progress]
+[//]: # (# User login)
 
-# Password renewal
+[//]: # ([in progress])
 
-[in progress]
+[//]: # (# Password renewal)
 
-# Changing email
+[//]: # ([in progress])
 
-[in progress]
+[//]: # (# Changing email)
+
+[//]: # ([in progress])
 
 <br/>[Back to README](../../README.md)

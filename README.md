@@ -61,7 +61,7 @@ Authentication is the process of verifying the identity of a user, device, or sy
 
 We should support various authentication flows, including user access and programmatic access.
 
-1. [Resource Owner Password Credentials (ROPC) (legacy)](documentation/authentication/ropc.md)
+1. [Resource Owner Password Credentials (ROPC)](documentation/authentication/ropc.md)
 2. [One-Time Password (OTP) Authentication](documentation/authentication/otp.md)
 3. [Bearer Token Authentication](documentation/authentication/bearer_token.md)
 4. Social Authentication Flows
