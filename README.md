@@ -64,7 +64,7 @@ We should support various authentication flows, including user access and progra
 1. [Resource Owner Password Credentials (ROPC)](documentation/authentication/ropc.md)
 2. [One-Time Password (OTP) Authentication](documentation/authentication/otp.md)
 3. [Bearer Token Authentication](documentation/authentication/bearer_token.md)
-4. Social Authentication Flows
+4. Social Authentication Flows (OAuth 2.0)
 5. Single Sign-On (SSO) Flows
 
 Additionally, we should describe switching between user flows.
