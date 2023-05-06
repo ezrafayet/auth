@@ -6,14 +6,19 @@
 
 "Therefore IAM" provides an authentication and authorisation solution for other services within a distributed system. It is meant to be generic and can be seamlessly integrated across multiple projects.
 
-## Quick start
+# Quick start
 
 ```
 docker-compose build
+```
+
+```
 docker-compose up
 ```
 
-# Architecture
+Then navigate to: http://localhost:5050
+
+# High level architecture
 
 The project contains mainly two services:
 - The API gateway
@@ -22,8 +27,6 @@ The project contains mainly two services:
 Additionally, the project includes two dummy services to facilitate its operation:
 - The Client service
 - The Core service
-
-## High level diagram
 
 The following draft diagram illustrates the overall architecture of the project:
 ```
@@ -37,19 +40,12 @@ The following draft diagram illustrates the overall architecture of the project:
                         +-------------------+
                                             |
                                             |    +---------+
-                                            +--->|  Core   | <-- Any services
+                                            +--->|  Core   |
                                                  +---------+
                                                     :8000
 ```
 
-## Topics
-
-- Single origin
-- Cookies management and life cycle
-- Redundancy
-- Rate limiting
-- Logs & Alerts
-- Hosting the project
+# Database schemas
 
 [In progress]
 
