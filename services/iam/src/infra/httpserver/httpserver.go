@@ -31,7 +31,14 @@ func Start() error {
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
+	// get a magic link
 	r.Post("/api/internal/v1/auth/login", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("headers", r.Header.Get("X-Request-Id"))
+		w.Write([]byte("{\"status\":\"success\"}"))
+	})
+
+	// perform login
+	r.Post("/api/internal/v1/auth/login/{authorizationCode}", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
