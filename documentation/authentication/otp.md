@@ -9,7 +9,7 @@ The One-Time Password (OTP) Authentication flow is a way to exchange a user's on
 ## Definitions
 
 - **Verification code**: A verification code is a unique, time-limited code that is used to verify the user's email address.
-- **Authorization code**: An authorization code is a unique, time-limited code that is used to exchange for an access token and a refresh token.
+- **Authorization code**: An authorization code is a unique, time-limited code that is used to exchange for an access and refresh tokens.
 - **Access token**: An access token is a unique, time-limited JWT that is used to authenticate API requests on behalf of the user.
 - **Refresh token**: A refresh token is a unique, time-limited token that is used to get a new Access Token.
 - **Authorization server**: The server that issues access tokens and refresh tokens to the client after successfully authenticating the resource owner and obtaining authorization.
