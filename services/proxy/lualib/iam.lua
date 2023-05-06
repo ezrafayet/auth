@@ -52,15 +52,19 @@ function _Handlers.login ()
     ngx.say(res.body);
 end
 
--- logout sets cookies to expire in the past
--- it should also blacklist the refresh token
 function _Handlers.logout ()
-    local expired = ngx.time() - 1
-    local refresh_cookie = string.format("refresh_token=; Expires=%s; Path=/; HttpOnly; Secure", ngx.cookie_time(expired))
-    local access_cookie = string.format("access_token=; Expires=%s; Path=/; HttpOnly; Secure", ngx.cookie_time(expired))
+    -- todo: blacklist the refresh token if one is present
+
+    local expirationDate = ngx.cookie_time(ngx.time() - 1)
+
+    local refresh_cookie = create_cookie("refresh_token", "", expirationDate)
+    local access_cookie = create_cookie("access_token", "", expirationDate)
+
     ngx.header["Set-Cookie"] = {refresh_cookie, access_cookie}
+
     ngx.header.content_type = "application/json; charset=utf-8"
-    ngx.say('{"status":"success logout"}')
+
+    ngx.say('{"status":"success", "message":"Logged out successfully"}')
 end
 
 return _Handlers

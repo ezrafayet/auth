@@ -1,6 +1,7 @@
 package httpserver
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -17,7 +18,29 @@ func Start() error {
 	})
 
 	r.Post("/api/internal/v1/auth/register", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("headers", r.Header.Get("X-Request-Id"))
+		type RegisterRequest struct {
+			Email    string `json:"email"`
+			Username string `json:"username"`
+			Method   string `json:"method"`
+		}
+
+		type RegisterResponse struct {
+			Status  string `json:"status"`
+			Message string `json:"message"`
+			Data    struct {
+				UserId string `json:"userId"`
+			}
+			Error struct {
+				Code string `json:"code"`
+			}
+		}
+
+		var registerRequest RegisterRequest
+		_ = json.NewDecoder(r.Body).Decode(&registerRequest)
+
+		fmt.Println("headers", r.Header.Get("X-Request-Id"), r.Header.Get("X-Initiator-Type"), r.Header.Get("X-Initiator-Id"))
+		fmt.Println("body", registerRequest.Method, registerRequest.Email, registerRequest.Username)
+
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 

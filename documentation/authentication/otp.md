@@ -70,7 +70,7 @@ Request:
 ```
 POST /api/internal/v1/auth/register
 {
-    "authMethod": "magicLink",
+    "method": "magicLink",
     "username": "string (mandatory)"
     "email": "string, (mandatory)"
 }
