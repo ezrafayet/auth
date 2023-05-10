@@ -44,24 +44,29 @@ func Start() error {
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
-	r.Post("/api/internal/v1/auth/users/{userId}/email-verification", func(w http.ResponseWriter, r *http.Request) {
+	r.Post("/api/internal/v1/auth/users/email-verification/send", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
-	r.Patch("/api/internal/v1/auth/users/{userId}/email-verification/{verificationCode}", func(w http.ResponseWriter, r *http.Request) {
+	r.Patch("/api/internal/v1/auth/users/email-verification/confirm", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
 	// get a magic link
-	r.Post("/api/internal/v1/auth/login", func(w http.ResponseWriter, r *http.Request) {
+	r.Post("/api/internal/v1/auth/magic-link", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
 
-	// perform login
-	r.Post("/api/internal/v1/auth/login/{authorizationCode}", func(w http.ResponseWriter, r *http.Request) {
+	// perform actual login
+	r.Post("/api/internal/v1/auth/token", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("headers", r.Header.Get("X-Request-Id"))
+		w.Write([]byte("{\"status\":\"success\"}"))
+	})
+
+	r.Post("/api/internal/v1/auth/logout", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})

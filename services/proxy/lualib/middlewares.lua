@@ -48,30 +48,24 @@ function set_headers_request_id ()
 end
 
 function set_headers_initiator ()
-    local cookie_access_token = ngx.var.cookie_access_token
-    local api_access_token = ngx.req.get_headers()["Authorization"]
+    local authorization_header = ngx.req.get_headers()["Authorization"]
     local cli_request = ngx.req.get_headers()["X_Is-Cli"]
     local user_agent = ngx.req.get_headers()["User-Agent"]
-    local is_web_user_agent = user_agent and (string.find(user_agent, "Mozilla") ~= nil)
+    local is_web_user_agent = user_agent and string.find(user_agent, "Mozilla") ~= nil
 
-    if (cookie_access_token ~= nil and #cookie_access_token ~= 0) then
-        local user_id, _ = extract_user_id_from_jwt(cookie_access_token)
+    if not authorization_header then
+        ngx.req.set_header("X-Initiator-Id", "")
+        ngx.req.set_header("X-Initiator-Type", is_web_user_agent and "web" or cli_request == "true" and "cli" or "api")
+        return
+    end
+
+    if is_web_user_agent then
+        local user_id, _ = extract_user_id_from_jwt(authorization_header)
         ngx.req.set_header("X-Initiator-Id", user_id)
         ngx.req.set_header("X-Initiator-Type", "web")
-    elseif (api_access_token ~= nil and #api_access_token ~= 0) then
-        ngx.req.set_header("X-Initiator-Id", api_access_token)
-        if (cli_request == "true") then
-            ngx.req.set_header("X-Initiator-Type", "cli")
-        else
-            ngx.req.set_header("X-Initiator-Type", "api")
-        end
     else
-        ngx.req.set_header("X-Initiator-Id", "")
-        if (is_web_user_agent) then
-            ngx.req.set_header("X-Initiator-Type", "web")
-        else
-            ngx.req.set_header("X-Initiator-Type", "api")
-        end
+        ngx.req.set_header("X-Initiator-Id", authorization_header)
+        ngx.req.set_header("X-Initiator-Type", cli_request == "true" and "cli" or "api")
     end
 end
 
@@ -83,7 +77,7 @@ function _M.set_headers()
     set_headers_frame_options()
     set_headers_xss_protection()
     set_headers_request_id()
-    set_headers_initiator()
+    set_headers_initiator() -- might be useless, to be determined
 end
 
 function _M.control_access_token()
