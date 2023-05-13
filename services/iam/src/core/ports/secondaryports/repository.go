@@ -2,11 +2,10 @@ package secondaryports
 
 import (
 	"iam/src/core/model"
-	"iam/src/core/types"
 )
 
 type UsersRepository interface {
-	CreateUser(user model.UserModel, authMethod types.AuthMethod) error
+	CreateUser(user model.UserModel, authMethod model.UsersAuthMethodsModel) error
 	//GetUserById(id types.Id) (model.UserModel, error)
 }
 

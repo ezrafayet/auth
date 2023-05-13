@@ -41,7 +41,9 @@ func (s *UsersService) Register(args RegisterArgs) (RegisterAnswer, error) {
 		return RegisterAnswer{}, err
 	}
 
-	err = s.usersRepository.CreateUser(user, authMethod)
+	userAuthMethod := model.NewUsersAuthMethodsModel(user.Id, authMethod)
+
+	err = s.usersRepository.CreateUser(user, userAuthMethod)
 
 	if err != nil {
 		return RegisterAnswer{}, err
