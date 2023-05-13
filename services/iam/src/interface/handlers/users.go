@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"iam/pkg/httphelpers"
 	"iam/src/core/ports"
 	"net/http"
@@ -21,7 +20,6 @@ func NewUsersHandler(usersService ports.UsersService) *UsersHandler {
 func (h *UsersHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var args ports.RegisterArgs
 	err := json.NewDecoder(r.Body).Decode(&args)
-	fmt.Println("===========", args)
 	if err != nil {
 		httphelpers.WriteError(http.StatusInternalServerError, "error", err.Error())(w, r)
 		return
