@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
 	"iam/pkg/env"
+	"iam/pkg/httphelpers"
 	"iam/src/infra/database"
 	"iam/src/infra/registry"
 	"net/http"
@@ -76,6 +77,8 @@ func Start() error {
 	//	fmt.Println("headers", r.Header.Get("X-Request-Id"))
 	//	w.Write([]byte("{\"status\":\"success\"}"))
 	//})
+
+	r.HandleFunc("/*", httphelpers.WriteError(http.StatusNotFound, "error", "NOT_FOUND"))
 
 	fmt.Println("Server started on port 7777")
 	return http.ListenAndServe(":7777", r)
