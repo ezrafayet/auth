@@ -1,4 +1,14 @@
+# github.com/cockroachdb/cockroach-go v2.0.1+incompatible
+## explicit
 # github.com/go-chi/chi/v5 v5.0.8
 ## explicit; go 1.14
 github.com/go-chi/chi/v5
 github.com/go-chi/chi/v5/middleware
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
+# github.com/lib/pq v1.10.9
+## explicit; go 1.13
+github.com/lib/pq
+github.com/lib/pq/oid
+github.com/lib/pq/scram
