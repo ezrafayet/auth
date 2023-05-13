@@ -1,4 +1,4 @@
-package ports
+package secondaryports
 
 type Email interface {
 	NewUser() error

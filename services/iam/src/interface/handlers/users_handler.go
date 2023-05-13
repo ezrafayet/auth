@@ -3,22 +3,23 @@ package handlers
 import (
 	"encoding/json"
 	"iam/pkg/httphelpers"
-	"iam/src/core/ports"
+	"iam/src/core/ports/primaryports"
+	"iam/src/core/services"
 	"net/http"
 )
 
 type UsersHandler struct {
-	usersService ports.UsersService
+	usersService primaryports.UsersService
 }
 
-func NewUsersHandler(usersService ports.UsersService) *UsersHandler {
+func NewUsersHandler(usersService primaryports.UsersService) *UsersHandler {
 	return &UsersHandler{
 		usersService: usersService,
 	}
 }
 
 func (h *UsersHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	var args ports.RegisterArgs
+	var args services.RegisterArgs
 	err := json.NewDecoder(r.Body).Decode(&args)
 	if err != nil {
 		httphelpers.WriteError(http.StatusInternalServerError, "error", err.Error())(w, r)

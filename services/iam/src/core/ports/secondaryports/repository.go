@@ -1,4 +1,4 @@
-package ports
+package secondaryports
 
 import (
 	"iam/src/core/model"

@@ -1,7 +1,9 @@
-package ports
+package primaryports
+
+import "iam/src/core/services"
 
 type UsersService interface {
-	Register(args RegisterArgs) (RegisterAnswer, error)
+	Register(args services.RegisterArgs) (services.RegisterAnswer, error)
 	// WhoAmI() error
 }
 
