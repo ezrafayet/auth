@@ -3,6 +3,7 @@ package types
 import (
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -39,5 +40,5 @@ func ComputeUsernameFingerprint(username Username) UsernameFingerprint {
 		}
 	}
 	sha := sha256.Sum256([]byte(cleanedUsername))
-	return UsernameFingerprint(sha[:])
+	return UsernameFingerprint(fmt.Sprintf("%x", sha[:]))
 }
