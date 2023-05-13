@@ -8,7 +8,7 @@ export default () => {
     async function signup () {
         const answer = await fetch("/api/internal/v1/auth/register", {
             method: "POST",
-            body: JSON.stringify({ method: "magicLink", email, username })
+            body: JSON.stringify({ "authMethod": "magic-link", email, username })
         })
     }
 

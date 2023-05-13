@@ -1,0 +1,13 @@
+package ports
+
+import "iam/src/core/types"
+
+type RegisterArgs struct {
+	AuthMethod string `json:"authMethod"`
+	Email      string `json:"email"`
+	Username   string `json:"username"`
+}
+
+type RegisterAnswer struct {
+	UserId types.Id `json:"userId"`
+}
