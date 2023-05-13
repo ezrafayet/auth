@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"iam/src/core/model"
 	"iam/src/core/ports"
 	"iam/src/core/types"
@@ -19,8 +18,6 @@ func NewUserService(usersRepository ports.UsersRepository) *UsersService {
 
 func (s *UsersService) Register(args ports.RegisterArgs) (ports.RegisterAnswer, error) {
 	authMethod, err := types.ParseAndValidateAuthMethod(args.AuthMethod)
-
-	fmt.Println("===========", args)
 
 	if err != nil {
 		return ports.RegisterAnswer{}, err
