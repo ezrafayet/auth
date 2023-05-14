@@ -8,8 +8,8 @@ type UsersService interface {
 }
 
 type EmailVerificationService interface {
-	Send() error
-	// Verify() error
+	Send(args services.SendVerificationCodeArgs) error
+	Verify(args services.VerifyCodeArgs) (services.VerifyCodeAnswer, error)
 }
 
 type AuthenticationService interface {
