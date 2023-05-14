@@ -21,7 +21,7 @@ func (r *UsersRepository) CreateUser(user model.UserModel, authMethod model.User
 	var txErr error
 	tx, txErr := r.db.Begin()
 	if txErr != nil {
-		return errors.New("ERROR")
+		return errors.New("SERVER_ERROR")
 	}
 	defer func(tx *sql.Tx) {
 		switch txErr {
