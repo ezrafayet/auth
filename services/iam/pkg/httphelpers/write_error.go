@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// WriteError is a helper function to write an error to the response writer
 func WriteError(code int, status, errorCode string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// WriteSuccess is a helper function to write a successful answer to the response writer
 func WriteSuccess(code int, message string, data any) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

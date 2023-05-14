@@ -14,8 +14,14 @@ import (
 )
 
 func init() {
-	if os.Getenv("ENV") != "production" && os.Getenv("ENV") != "staging" {
+	if os.Getenv("ENV") != "PRODUCTION" && os.Getenv("ENV") != "STAGING" {
 		env.LoadFromFile()
+	}
+
+	err := env.CheckRequiredEnv()
+
+	if err != nil {
+		panic(err)
 	}
 }
 

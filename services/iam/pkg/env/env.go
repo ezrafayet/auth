@@ -7,9 +7,11 @@ import (
 )
 
 // LoadFromFile reads variables from .env file and sets them as environment variables
+// This reader is very basic, it only supports the format key = value, with no quotes, no multiline
+// variables, no trailing comments.
 func LoadFromFile() {
 	// The .env is copied to the container during the build process
-	// This is not a best practise and will need to change and be set differently
+	// This is not best practise and will need to change and be set differently
 	file, err := os.Open("/go/bin/.env")
 	if err != nil {
 		panic(err)
@@ -31,4 +33,9 @@ func LoadFromFile() {
 			panic(err)
 		}
 	}
+}
+
+func CheckRequiredEnv() error {
+	// todo: check if envs are set
+	return nil
 }
