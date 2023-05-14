@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/lib/pq"
 	"iam/src/core/model"
 	"time"
 )
@@ -38,13 +39,22 @@ func (r *UsersRepository) CreateUser(user model.UserModel, authMethod model.User
 	_, txErr = tx.Exec("INSERT INTO users(id, created_at, username, username_fingerprint, email) VALUES ($1, $2, $3, $4, $5)", user.Id, time.Time(user.CreatedAt), user.Username, user.UsernameFingerprint, user.Email)
 
 	if txErr != nil {
-		return txErr
+		if pgErr, ok := txErr.(*pq.Error); ok {
+			if pgErr.Code == "23505" && pgErr.Constraint == "users_unique_fingerprint" {
+				return errors.New("USERNAME_NOT_AVAILABLE")
+			} else if pgErr.Code == "23505" && pgErr.Constraint == "users_unique_email" {
+				return errors.New("EMAIL_NOT_AVAILABLE")
+			}
+		}
+		fmt.Println(txErr)
+		return errors.New("SERVER_ERROR")
 	}
 
 	_, txErr = tx.Exec("INSERT INTO users_auth_methods(id, user_id, auth_method) VALUES ($1, $2, $3)", authMethod.Id, authMethod.UserId, authMethod.AuthMethod)
 
 	if txErr != nil {
-		return txErr
+		fmt.Println(txErr)
+		return errors.New("SERVER_ERROR")
 	}
 
 	return nil
