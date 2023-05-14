@@ -9,13 +9,13 @@ type UsersService interface {
 
 type EmailVerificationService interface {
 	Send() error
-	Verify() error
+	// Verify() error
 }
 
 type AuthenticationService interface {
-	MagicLink() error
-	Token() error
-	RefreshToken() error
-	RevokeToken() error
-	VerifyToken() error
+	// MagicLink() error
+	// Token() error
+	// RefreshToken() error
+	// RevokeToken() error
+	// VerifyToken() error
 }

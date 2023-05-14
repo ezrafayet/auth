@@ -9,19 +9,22 @@ const (
 	AuthMethodMagicLink
 )
 
-var AuthMethodsNames = []string{"password", "magic-link"}
+var authMethodsNames = []string{"password", "magic-link"}
 
 func (a AuthMethod) String() string {
-	return AuthMethodsNames[a]
+	if a < AuthMethodPassword || a > AuthMethodMagicLink {
+		return "unknown"
+	}
+	return authMethodsNames[a]
 }
 
 func ParseAndValidateAuthMethod(authMethod string) (AuthMethod, error) {
 	switch authMethod {
-	case AuthMethodsNames[0]:
-		return 0, nil
-	case AuthMethodsNames[1]:
-		return 1, nil
+	case authMethodsNames[AuthMethodPassword]:
+		return AuthMethodPassword, nil
+	case authMethodsNames[AuthMethodMagicLink]:
+		return AuthMethodMagicLink, nil
 	default:
-		return -1, errors.New("INVALID_AUTH_METHOD")
+		return 127, errors.New("INVALID_AUTH_METHOD")
 	}
 }
