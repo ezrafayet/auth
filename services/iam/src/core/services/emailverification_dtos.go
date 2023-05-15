@@ -1,19 +1,15 @@
 package services
 
-import (
-	"iam/src/core/types"
-)
-
 type SendVerificationCodeArgs struct {
-	UserId types.Id `json:"userId"`
+	UserId string `json:"userId"`
 }
 
 type SendVerificationCodeAnswer struct{}
 
-type VerifyCodeArgs struct {
+type ConfirmVerificationCodeArgs struct {
 	VerificationCode string `json:"verificationCode"`
 }
 
-type VerifyCodeAnswer struct {
+type ConfirmVerificationCodeAnswer struct {
 	AuthorizationCode string `json:"authorizationCode"`
 }

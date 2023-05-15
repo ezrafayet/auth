@@ -35,7 +35,7 @@ func (s *UsersService) Register(args RegisterArgs) (RegisterAnswer, error) {
 		return RegisterAnswer{}, err
 	}
 
-	user := model.NewUserModel(username, email)
+	user := model.NewUserModel(username, email, types.NewTimestamp())
 
 	if err != nil {
 		return RegisterAnswer{}, err
@@ -43,7 +43,7 @@ func (s *UsersService) Register(args RegisterArgs) (RegisterAnswer, error) {
 
 	userAuthMethod := model.NewUsersAuthMethodsModel(user.Id, authMethod)
 
-	err = s.usersRepository.CreateUser(user, userAuthMethod)
+	err = s.usersRepository.SaveUser(user, userAuthMethod)
 
 	if err != nil {
 		return RegisterAnswer{}, err

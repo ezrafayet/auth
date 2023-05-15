@@ -37,11 +37,11 @@ func Start() error {
 
 	// User management endpoints
 	router.Get("/api/internal/v1/auth/whoami", nil)
-	router.Post("/api/internal/v1/auth/register", r.UsersHandler.RegisterHandler)
+	router.Post("/api/internal/v1/auth/register", r.UsersHandler.Register)
 
 	// Email verification endpoints
-	router.Post("/api/internal/v1/auth/email-verification/send", nil)
-	router.Patch("/api/internal/v1/auth/email-verification/verify", nil)
+	router.Post("/api/internal/v1/auth/email-verification/send", r.VerificationCodeHandler.SendVerificationEmail)
+	router.Patch("/api/internal/v1/auth/email-verification/confirm", r.VerificationCodeHandler.VerifyEmail)
 
 	// Authentication endpoints
 	router.Post("/api/internal/v1/auth/magic-link", nil)

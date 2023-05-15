@@ -1,6 +1,10 @@
 package types
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"fmt"
+	"github.com/google/uuid"
+)
 
 type Id string
 
@@ -8,7 +12,11 @@ func NewId() Id {
 	return Id(uuid.New().String())
 }
 
-func IsIdValid(id string) bool {
+func ParseAndValidateId(id string) (Id, error) {
 	_, err := uuid.Parse(id)
-	return err == nil
+	if err != nil {
+		fmt.Println(err)
+		return "", errors.New("INVALID_ID")
+	}
+	return Id(id), nil
 }

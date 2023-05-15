@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/lib/pq"
 	"iam/src/core/model"
+	"iam/src/core/types"
 	"time"
 )
 
@@ -17,7 +18,7 @@ func NewUsersRepository(db *sql.DB) *UsersRepository {
 	return &UsersRepository{db: db}
 }
 
-func (r *UsersRepository) CreateUser(user model.UserModel, authMethod model.UsersAuthMethodsModel) error {
+func (r *UsersRepository) SaveUser(user model.UserModel, authMethod model.UsersAuthMethodsModel) error {
 	var txErr error
 	tx, txErr := r.db.Begin()
 	if txErr != nil {
@@ -57,5 +58,48 @@ func (r *UsersRepository) CreateUser(user model.UserModel, authMethod model.User
 		return errors.New("SERVER_ERROR")
 	}
 
+	return nil
+}
+
+func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
+	var user model.UserModel
+
+	var (
+		createdAt           time.Time
+		username            string
+		usernameFingerprint string
+		email               string
+		emailVerified       bool
+		emailVerifiedAt     sql.NullTime
+		blocked             bool
+		deleted             bool
+		deletedAt           sql.NullTime
+	)
+
+	txErr := r.db.QueryRow("SELECT created_at, username, username_fingerprint, email, email_verified, email_verified_at, blocked, deleted, deleted_at FROM users WHERE id = $1", id).Scan(&createdAt, &username, &usernameFingerprint, &email, &emailVerified, &emailVerifiedAt, &blocked, &deleted, &deletedAt)
+
+	if txErr != nil {
+		fmt.Println(txErr)
+		return user, errors.New("USER_NOT_FOUND")
+	}
+
+	var parsedEmailValidatedAt time.Time
+
+	if emailVerifiedAt.Valid {
+		parsedEmailValidatedAt = emailVerifiedAt.Time
+	}
+
+	var parsedDeletedAt time.Time
+
+	if deletedAt.Valid {
+		parsedDeletedAt = deletedAt.Time
+	}
+
+	user.Hydrate(string(id), createdAt, username, usernameFingerprint, email, emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
+
+	return user, nil
+}
+
+func (r *UsersRepository) ValidateEmail(id types.Id) error {
 	return nil
 }

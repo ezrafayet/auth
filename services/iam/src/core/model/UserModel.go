@@ -2,6 +2,7 @@ package model
 
 import (
 	"iam/src/core/types"
+	"time"
 )
 
 type UserModel struct {
@@ -17,10 +18,10 @@ type UserModel struct {
 	DeletedAt           types.Timestamp
 }
 
-func NewUserModel(username types.Username, email types.Email) UserModel {
+func NewUserModel(username types.Username, email types.Email, timestamp types.Timestamp) UserModel {
 	return UserModel{
 		Id:                  types.NewId(),
-		CreatedAt:           types.NewTimestamp(),
+		CreatedAt:           timestamp,
 		Username:            username,
 		UsernameFingerprint: types.ComputeUsernameFingerprint(username),
 		Email:               email,
@@ -30,7 +31,28 @@ func NewUserModel(username types.Username, email types.Email) UserModel {
 	}
 }
 
-func (u *UserModel) Hydrate() { /*todo*/ }
+func (u *UserModel) Hydrate(
+	id string,
+	createdAt time.Time,
+	username string,
+	usernameFingerprint string,
+	email string,
+	emailVerified bool,
+	emailVerifiedAt time.Time,
+	blocked bool,
+	deleted bool,
+	deletedAt time.Time) {
+	u.Id = types.Id(id)
+	u.CreatedAt = types.Timestamp(createdAt)
+	u.Username = types.Username(username)
+	u.UsernameFingerprint = types.UsernameFingerprint(usernameFingerprint)
+	u.Email = types.Email(email)
+	u.EmailVerified = emailVerified
+	u.EmailVerifiedAt = types.Timestamp(emailVerifiedAt)
+	u.Blocked = blocked
+	u.Deleted = deleted
+	u.DeletedAt = types.Timestamp(deletedAt)
+}
 
 func (u *UserModel) IsBlocked() bool {
 	return u.Blocked

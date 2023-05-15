@@ -8,21 +8,26 @@ import (
 )
 
 type Registry struct {
-	UsersHandler *handlers.UsersHandler
+	UsersHandler            *handlers.UsersHandler
+	VerificationCodeHandler *handlers.EmailVerificationHandler
 }
 
 func NewRegistry(db *sql.DB) *Registry {
 	// Repositories
 	var usersRepository = repository.NewUsersRepository(db)
+	var verificationCodeRepository = repository.NewVerificationCodeRepository(db)
 
 	// Services
 	var usersService = services.NewUserService(usersRepository)
+	var verificationCodeService = services.NewEmailVerificationService(usersRepository, verificationCodeRepository)
 
 	// Handlers
 	var usersHandler = handlers.NewUsersHandler(usersService)
+	var verificationCodeHandler = handlers.NewEmailVerificationHandler(verificationCodeService)
 
 	// Registry
 	return &Registry{
-		UsersHandler: usersHandler,
+		UsersHandler:            usersHandler,
+		VerificationCodeHandler: verificationCodeHandler,
 	}
 }

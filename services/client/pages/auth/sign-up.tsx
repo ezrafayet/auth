@@ -10,6 +10,15 @@ export default () => {
             method: "POST",
             body: JSON.stringify({ "authMethod": "magic-link", email, username })
         })
+        const answerJson = await answer.json();
+        if (answerJson.status !== "success") {
+            console.error(answerJson);
+            return;
+        }
+        const answer2 = await fetch("/api/internal/v1/auth/email-verification/send", {
+            method: "POST",
+            body: JSON.stringify({ "userId": answerJson.data.userId })
+        })
     }
 
     return <>
