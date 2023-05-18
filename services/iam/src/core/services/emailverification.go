@@ -11,14 +11,17 @@ import (
 type EmailVerificationService struct {
 	usersRepository                 secondaryports.UsersRepository
 	emailVerificationCodeRepository secondaryports.EmailVerificationCodeRepository
+	authorizationCodeRepository     secondaryports.AuthorizationCodeRepository
 }
 
 func NewEmailVerificationService(
 	usersRepository secondaryports.UsersRepository,
-	emailVerificationCodeRepository secondaryports.EmailVerificationCodeRepository) *EmailVerificationService {
+	emailVerificationCodeRepository secondaryports.EmailVerificationCodeRepository,
+	authorizationCodeRepository secondaryports.AuthorizationCodeRepository) *EmailVerificationService {
 	return &EmailVerificationService{
 		usersRepository:                 usersRepository,
 		emailVerificationCodeRepository: emailVerificationCodeRepository,
+		authorizationCodeRepository:     authorizationCodeRepository,
 	}
 }
 
@@ -35,33 +38,94 @@ func (e *EmailVerificationService) Send(args SendVerificationCodeArgs) error {
 		return err
 	}
 
-	if user.IsEmailVerified() {
+	if user.HasEmailVerified() {
 		return errors.New("EMAIL_ALREADY_VERIFIED")
 	}
 
-	// todo: verify number of emails sent in the last 1 hour
-
-	code, err := types.NewCode()
+	nActiveCodes, err := e.emailVerificationCodeRepository.CountActiveCodes(userId)
 
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("SERVER_ERROR")
 	}
 
-	verificationCode := model.NewVerificationCodeModel(userId, code, types.NewTimestamp(), 5*60)
+	if nActiveCodes >= 3 {
+		return errors.New("LIMIT_EXCEEDED")
+	}
 
-	err = e.emailVerificationCodeRepository.SaveVerificationCode(verificationCode)
+	verificationCode, err := model.NewVerificationCodeModel(userId)
+
+	if err != nil {
+		return err
+	}
+
+	err = e.emailVerificationCodeRepository.SaveCode(verificationCode)
 
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("SERVER_ERROR")
 	}
 
-	fmt.Println("==== Sending email ====", user.Email, code)
+	fmt.Println("==== Sending email ====", user.Email, verificationCode.Code, verificationCode.Code.GetUrlEncoded())
 
 	return nil
 }
 
-func (e *EmailVerificationService) Confirm(args ConfirmVerificationCodeArgs) (ConfirmVerificationCodeAnswer, error) {
-	return ConfirmVerificationCodeAnswer{}, nil
+func (e *EmailVerificationService) Confirm(args ConfirmEmailArgs) (ConfirmEmailAnswer, error) {
+	fmt.Println("----------- hiiiiiiiiiiiiiiiit")
+	code, err := types.ParseAndValidateCode(args.VerificationCode)
+
+	if err != nil {
+		return ConfirmEmailAnswer{}, err
+	}
+
+	fmt.Println("hit", code)
+
+	verificationCode, err := e.emailVerificationCodeRepository.GetCode(code)
+
+	if err != nil {
+		return ConfirmEmailAnswer{}, err
+	}
+
+	fmt.Println("hit", verificationCode)
+
+	if verificationCode.IsExpired() {
+		return ConfirmEmailAnswer{}, errors.New("CODE_EXPIRED")
+	}
+
+	err = e.emailVerificationCodeRepository.DeleteCode(code)
+
+	if err != nil {
+		return ConfirmEmailAnswer{}, err
+	}
+
+	user, err := e.usersRepository.GetUserById(verificationCode.UserId)
+
+	if user.HasEmailVerified() {
+		return ConfirmEmailAnswer{}, errors.New("EMAIL_ALREADY_VERIFIED")
+	}
+
+	err = e.usersRepository.ValidateEmail(verificationCode.UserId)
+
+	if err != nil {
+		return ConfirmEmailAnswer{}, err
+	}
+
+	authorizationCode, err := model.NewAuthorizationCodeModel(verificationCode.UserId)
+
+	if err != nil {
+		return ConfirmEmailAnswer{}, err
+	}
+
+	fmt.Println("hit4", authorizationCode)
+
+	err = e.authorizationCodeRepository.SaveCode(authorizationCode)
+
+	if err != nil {
+		return ConfirmEmailAnswer{}, err
+	}
+
+	return ConfirmEmailAnswer{
+		AuthorizationCode: string(authorizationCode.Code),
+	}, nil
 }

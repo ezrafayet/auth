@@ -12,6 +12,15 @@ type UsersRepository interface {
 }
 
 type EmailVerificationCodeRepository interface {
-	SaveVerificationCode(code model.EmailVerificationCodeModel) error
-	ConfirmVerificationCode(code types.Code) error
+	SaveCode(code model.EmailVerificationCodeModel) error
+	CountActiveCodes(userId types.Id) (int, error)
+	GetCode(code types.Code) (model.EmailVerificationCodeModel, error)
+	DeleteCode(code types.Code) error
+}
+
+type AuthorizationCodeRepository interface {
+	SaveCode(code model.AuthorizationCodeModel) error
+	// CountActiveCodes(userId types.Id) (int, error)
+	GetCode(code types.Code) (model.AuthorizationCodeModel, error)
+	DeleteCode(code types.Code) error
 }

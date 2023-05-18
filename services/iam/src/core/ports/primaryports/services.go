@@ -9,7 +9,7 @@ type UsersService interface {
 
 type EmailVerificationService interface {
 	Send(args services.SendVerificationCodeArgs) error
-	Confirm(args services.ConfirmVerificationCodeArgs) (services.ConfirmVerificationCodeAnswer, error)
+	Confirm(args services.ConfirmEmailArgs) (services.ConfirmEmailAnswer, error)
 }
 
 type AuthenticationService interface {

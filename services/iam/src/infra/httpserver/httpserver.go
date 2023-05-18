@@ -41,7 +41,7 @@ func Start() error {
 
 	// Email verification endpoints
 	router.Post("/api/internal/v1/auth/email-verification/send", r.VerificationCodeHandler.SendVerificationEmail)
-	router.Patch("/api/internal/v1/auth/email-verification/confirm", r.VerificationCodeHandler.VerifyEmail)
+	router.Patch("/api/internal/v1/auth/email-verification/confirm", r.VerificationCodeHandler.ConfirmEmail)
 
 	// Authentication endpoints
 	router.Post("/api/internal/v1/auth/magic-link", nil)

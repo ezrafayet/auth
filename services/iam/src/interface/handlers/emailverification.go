@@ -41,4 +41,27 @@ func (h *EmailVerificationHandler) SendVerificationEmail(w http.ResponseWriter, 
 	httphelpers.WriteSuccess(http.StatusOK, "Verification code sent successfully", struct{}{})(w, r)
 }
 
-func (h *EmailVerificationHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) {}
+func (h *EmailVerificationHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
+	var args services.ConfirmEmailArgs
+
+	err := json.NewDecoder(r.Body).Decode(&args)
+
+	fmt.Println("Body")
+	fmt.Println(r.Body)
+
+	if err != nil {
+		fmt.Println(err)
+		httphelpers.WriteError(http.StatusInternalServerError, "error", err.Error())(w, r)
+		return
+	}
+
+	answer, err := h.emailVerificationService.Confirm(args)
+
+	if err != nil {
+		fmt.Println(err)
+		httphelpers.WriteError(http.StatusInternalServerError, "error", err.Error())(w, r)
+		return
+	}
+
+	httphelpers.WriteSuccess(http.StatusOK, "Email verified successfully", answer)(w, r)
+}

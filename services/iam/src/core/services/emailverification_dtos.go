@@ -6,10 +6,10 @@ type SendVerificationCodeArgs struct {
 
 type SendVerificationCodeAnswer struct{}
 
-type ConfirmVerificationCodeArgs struct {
+type ConfirmEmailArgs struct {
 	VerificationCode string `json:"verificationCode"`
 }
 
-type ConfirmVerificationCodeAnswer struct {
+type ConfirmEmailAnswer struct {
 	AuthorizationCode string `json:"authorizationCode"`
 }

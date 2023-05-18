@@ -62,6 +62,6 @@ func (u *UserModel) IsDeleted() bool {
 	return u.Deleted
 }
 
-func (u *UserModel) IsEmailVerified() bool {
+func (u *UserModel) HasEmailVerified() bool {
 	return u.EmailVerified
 }

@@ -100,6 +100,12 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 	return user, nil
 }
 
-func (r *UsersRepository) ValidateEmail(id types.Id) error {
+func (r *UsersRepository) ValidateEmail(userId types.Id) error {
+	_, txErr := r.db.Exec("UPDATE users SET email_verified = true, email_verified_at = $1 WHERE id = $2", time.Now().UTC(), userId)
+
+	if txErr != nil {
+		return txErr
+	}
+
 	return nil
 }
