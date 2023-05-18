@@ -72,22 +72,17 @@ func (e *EmailVerificationService) Send(args SendVerificationCodeArgs) error {
 }
 
 func (e *EmailVerificationService) Confirm(args ConfirmEmailArgs) (ConfirmEmailAnswer, error) {
-	fmt.Println("----------- hiiiiiiiiiiiiiiiit")
 	code, err := types.ParseAndValidateCode(args.VerificationCode)
 
 	if err != nil {
 		return ConfirmEmailAnswer{}, err
 	}
 
-	fmt.Println("hit", code)
-
 	verificationCode, err := e.emailVerificationCodeRepository.GetCode(code)
 
 	if err != nil {
 		return ConfirmEmailAnswer{}, err
 	}
-
-	fmt.Println("hit", verificationCode)
 
 	if verificationCode.IsExpired() {
 		return ConfirmEmailAnswer{}, errors.New("CODE_EXPIRED")
@@ -116,8 +111,6 @@ func (e *EmailVerificationService) Confirm(args ConfirmEmailArgs) (ConfirmEmailA
 	if err != nil {
 		return ConfirmEmailAnswer{}, err
 	}
-
-	fmt.Println("hit4", authorizationCode)
 
 	err = e.authorizationCodeRepository.SaveCode(authorizationCode)
 

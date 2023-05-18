@@ -20,7 +20,6 @@ type EmailVerificationCodeRepository interface {
 
 type AuthorizationCodeRepository interface {
 	SaveCode(code model.AuthorizationCodeModel) error
-	// CountActiveCodes(userId types.Id) (int, error)
 	GetCode(code types.Code) (model.AuthorizationCodeModel, error)
 	DeleteCode(code types.Code) error
 }
