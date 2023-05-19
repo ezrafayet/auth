@@ -66,7 +66,7 @@ func (e *EmailVerificationService) Send(args SendVerificationCodeArgs) error {
 		return errors.New("SERVER_ERROR")
 	}
 
-	fmt.Println("==== Sending email ====", user.Email, verificationCode.Code, verificationCode.Code.GetUrlEncoded())
+	fmt.Println("==== Sending email ====", user.Email, verificationCode.Code, verificationCode.Code.EncodeForURL())
 
 	return nil
 }

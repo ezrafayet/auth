@@ -11,12 +11,14 @@ type Username string
 type UsernameFingerprint string
 
 func ParseAndValidateUsername(username string) (Username, error) {
-	username = strings.TrimSpace(username)
 	if len(username) > 40 || len(username) < 2 {
 		return "", errors.New("INVALID_USERNAME")
 	}
 	if username[0] == '-' || username[len(username)-1] == '-' {
 		return "", errors.New("NO_TRAILING_OR_LEADING_DASH")
+	}
+	if username[0] == '_' || username[len(username)-1] == '_' {
+		return "", errors.New("NO_TRAILING_OR_LEADING_UNDERSCORE")
 	}
 	authorizedCharacters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"
 	for _, char := range username {

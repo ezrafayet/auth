@@ -34,6 +34,6 @@ func ParseAndValidateCode(code string) (Code, error) {
 	return Code(code), nil
 }
 
-func (c Code) GetUrlEncoded() string {
+func (c Code) EncodeForURL() string {
 	return base64.URLEncoding.EncodeToString([]byte(c))
 }
