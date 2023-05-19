@@ -6,8 +6,7 @@ dev:
 # We can still have them for reference:
 
 test:
-	go test ./pkg/...
-	go test ./src/...
+	go test ./... -cover
 
 build:
 	go build -o out/app cmd/httpserver/main.go
