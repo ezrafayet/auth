@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
-	"fmt"
+	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
 	"time"
@@ -23,8 +23,8 @@ func (v *VerificationCodeRepository) SaveCode(code model.EmailVerificationCodeMo
 	_, err := v.db.Exec("INSERT INTO email_verification_codes (user_id, code, created_at, expires_at) VALUES ($1, $2, $3, $4)", string(code.UserId), string(code.Code), time.Time(code.CreatedAt), time.Time(code.ExpiresAt))
 
 	if err != nil {
-		fmt.Println(err)
-		return errors.New("SERVER_ERROR")
+		// todo: handle error
+		return err
 	}
 
 	return nil
@@ -36,8 +36,8 @@ func (v *VerificationCodeRepository) CountActiveCodes(userId types.Id) (int, err
 	err := v.db.QueryRow("SELECT COUNT(*) FROM email_verification_codes WHERE user_id = $1 AND expires_at > $2", string(userId), time.Now().UTC()).Scan(&count)
 
 	if err != nil {
-		fmt.Println(err)
-		return 0, errors.New("SERVER_ERROR")
+		// todo: handle error
+		return count, err
 	}
 
 	return count, nil
@@ -52,11 +52,12 @@ func (v *VerificationCodeRepository) GetCode(code types.Code) (model.EmailVerifi
 	err := v.db.QueryRow("SELECT user_id, created_at, expires_at FROM email_verification_codes WHERE code = $1", string(code)).Scan(&userId, &createdAt, &expiresAt)
 
 	if err != nil {
+		// todo: handle error
 		return model.EmailVerificationCodeModel{}, err
 	}
 
 	if userId == "" {
-		return model.EmailVerificationCodeModel{}, errors.New("CODE_NOT_FOUND")
+		return model.EmailVerificationCodeModel{}, errors.New(apperrors.VerificationCodeNotFound)
 	}
 
 	verificationCode.Hydrate(userId, string(code), createdAt, expiresAt)

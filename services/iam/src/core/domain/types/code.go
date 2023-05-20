@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"iam/pkg/apperrors"
 )
 
 // Code is a generic code type, used for verification codes, authorization codes, etc.
@@ -22,13 +23,13 @@ func NewCode() (Code, error) {
 
 func ParseAndValidateCode(code string) (Code, error) {
 	if len(code) != 44 {
-		return "", errors.New("INVALID_CODE")
+		return "", errors.New(apperrors.InvalidCode)
 	}
 
 	_, err := base64.StdEncoding.DecodeString(code)
 
 	if err != nil {
-		return "", errors.New("INVALID_CODE")
+		return "", errors.New(apperrors.InvalidCode)
 	}
 
 	return Code(code), nil

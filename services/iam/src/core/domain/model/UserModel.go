@@ -41,7 +41,7 @@ func (u *UserModel) Hydrate(
 	emailVerifiedAt time.Time,
 	blocked bool,
 	deleted bool,
-	deletedAt time.Time) {
+	deletedAt time.Time) error {
 	u.Id = types.Id(id)
 	u.CreatedAt = types.Timestamp(createdAt)
 	u.Username = types.Username(username)
@@ -52,6 +52,7 @@ func (u *UserModel) Hydrate(
 	u.Blocked = blocked
 	u.Deleted = deleted
 	u.DeletedAt = types.Timestamp(deletedAt)
+	return nil
 }
 
 func (u *UserModel) IsBlocked() bool {

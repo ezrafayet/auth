@@ -26,7 +26,7 @@ func (h *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println(err)
-		httphelpers.WriteError(http.StatusInternalServerError, "error", err.Error())(w, r)
+		httphelpers.WriteError(http.StatusInternalServerError, "error", apperrors.ServerError)(w, r)
 		return
 	}
 

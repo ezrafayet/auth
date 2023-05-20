@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
 	"iam/src/core/ports/primaryports"
@@ -40,18 +41,17 @@ func (e *EmailVerificationService) Send(args primaryports.SendVerificationCodeAr
 	}
 
 	if user.HasEmailVerified() {
-		return errors.New("EMAIL_ALREADY_VERIFIED")
+		return errors.New(apperrors.EmailAlreadyVerified)
 	}
 
 	nActiveCodes, err := e.emailVerificationCodeRepository.CountActiveCodes(userId)
 
 	if err != nil {
-		fmt.Println(err)
-		return errors.New("SERVER_ERROR")
+		return err
 	}
 
 	if nActiveCodes >= 3 {
-		return errors.New("LIMIT_EXCEEDED")
+		return errors.New(apperrors.LimitExceeded)
 	}
 
 	verificationCode, err := model.NewVerificationCodeModel(userId)
@@ -63,8 +63,7 @@ func (e *EmailVerificationService) Send(args primaryports.SendVerificationCodeAr
 	err = e.emailVerificationCodeRepository.SaveCode(verificationCode)
 
 	if err != nil {
-		fmt.Println(err)
-		return errors.New("SERVER_ERROR")
+		return err
 	}
 
 	fmt.Println("==== Sending email ====", user.Email, verificationCode.Code, verificationCode.Code.EncodeForURL())
@@ -86,7 +85,7 @@ func (e *EmailVerificationService) Confirm(args primaryports.ConfirmEmailArgs) (
 	}
 
 	if verificationCode.IsExpired() {
-		return primaryports.ConfirmEmailAnswer{}, errors.New("CODE_EXPIRED")
+		return primaryports.ConfirmEmailAnswer{}, errors.New(apperrors.VerificationCodeExpired)
 	}
 
 	err = e.emailVerificationCodeRepository.DeleteCode(code)
@@ -97,14 +96,26 @@ func (e *EmailVerificationService) Confirm(args primaryports.ConfirmEmailArgs) (
 
 	user, err := e.usersRepository.GetUserById(verificationCode.UserId)
 
+	if err != nil {
+		return primaryports.ConfirmEmailAnswer{}, err
+	}
+
 	if user.HasEmailVerified() {
-		return primaryports.ConfirmEmailAnswer{}, errors.New("EMAIL_ALREADY_VERIFIED")
+		return primaryports.ConfirmEmailAnswer{}, errors.New(apperrors.EmailAlreadyVerified)
 	}
 
 	err = e.usersRepository.ValidateEmail(verificationCode.UserId)
 
 	if err != nil {
 		return primaryports.ConfirmEmailAnswer{}, err
+	}
+
+	if user.IsBlocked() {
+		return primaryports.ConfirmEmailAnswer{}, errors.New(apperrors.UserBlocked)
+	}
+
+	if user.IsDeleted() {
+		return primaryports.ConfirmEmailAnswer{}, errors.New(apperrors.UserDeleted)
 	}
 
 	authorizationCode, err := model.NewAuthorizationCodeModel(verificationCode.UserId)

@@ -79,7 +79,8 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 
 	if txErr != nil {
 		fmt.Println(txErr)
-		return user, errors.New("USER_NOT_FOUND")
+		// todo: handle error better
+		return user, errors.New(apperrors.UserNotFound)
 	}
 
 	var parsedEmailValidatedAt time.Time
@@ -94,7 +95,11 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 		parsedDeletedAt = deletedAt.Time
 	}
 
-	user.Hydrate(string(id), createdAt, username, usernameFingerprint, email, emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
+	err := user.Hydrate(string(id), createdAt, username, usernameFingerprint, email, emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
+
+	if err != nil {
+		return user, err
+	}
 
 	return user, nil
 }
@@ -103,6 +108,7 @@ func (r *UsersRepository) ValidateEmail(userId types.Id) error {
 	_, txErr := r.db.Exec("UPDATE users SET email_verified = true, email_verified_at = $1 WHERE id = $2", time.Now().UTC(), userId)
 
 	if txErr != nil {
+		// todo: handle error better
 		return txErr
 	}
 
