@@ -1,6 +1,6 @@
 package model
 
-import "iam/src/core/types"
+import "iam/src/core/domain/types"
 
 type UsersAuthMethodsModel struct {
 	Id         types.Id

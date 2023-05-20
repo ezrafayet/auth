@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/lib/pq"
-	"iam/src/core/model"
-	"iam/src/core/types"
+	"iam/src/core/domain/model"
+	"iam/src/core/domain/types"
 	"time"
 )
 

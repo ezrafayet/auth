@@ -4,6 +4,7 @@ FROM golang:1.19 AS iam-build
 WORKDIR /go/src/app
 COPY . .
 ENV CGO_ENABLED=0 GOOS=linux
+RUN make test
 RUN go build -o /go/bin/app ./cmd/httpserver/main.go
 
 # Copy binary

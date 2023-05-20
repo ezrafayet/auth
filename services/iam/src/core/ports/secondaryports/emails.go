@@ -1,7 +1,7 @@
 package secondaryports
 
 import (
-	"iam/src/core/types"
+	"iam/src/core/domain/types"
 )
 
 type Email interface {

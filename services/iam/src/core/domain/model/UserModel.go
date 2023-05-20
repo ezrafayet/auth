@@ -1,7 +1,7 @@
 package model
 
 import (
-	"iam/src/core/types"
+	"iam/src/core/domain/types"
 	"time"
 )
 

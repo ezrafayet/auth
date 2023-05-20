@@ -3,9 +3,9 @@ package services
 import (
 	"errors"
 	"fmt"
-	"iam/src/core/model"
+	"iam/src/core/domain/model"
+	"iam/src/core/domain/types"
 	"iam/src/core/ports/secondaryports"
-	"iam/src/core/types"
 )
 
 type EmailVerificationService struct {

@@ -3,7 +3,7 @@ package model
 import (
 	"errors"
 	"fmt"
-	"iam/src/core/types"
+	"iam/src/core/domain/types"
 	"time"
 )
 

@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"iam/src/core/model"
-	"iam/src/core/types"
+	"iam/src/core/domain/model"
+	"iam/src/core/domain/types"
 	"time"
 )
 

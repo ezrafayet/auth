@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"iam/src/core/types"
+	"iam/src/core/domain/types"
 	"time"
 )
 

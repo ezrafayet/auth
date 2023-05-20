@@ -1,6 +1,6 @@
 package services
 
-import "iam/src/core/types"
+import "iam/src/core/domain/types"
 
 type RegisterArgs struct {
 	AuthMethod string `json:"authMethod"`
