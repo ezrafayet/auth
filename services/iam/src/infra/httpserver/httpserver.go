@@ -5,7 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
-	"iam/pkg/env"
+	"iam/pkg/envreader"
 	"iam/pkg/httphelpers"
 	"iam/src/infra/database"
 	"iam/src/infra/registry"
@@ -15,10 +15,10 @@ import (
 
 func init() {
 	if os.Getenv("ENV") != "PRODUCTION" && os.Getenv("ENV") != "STAGING" {
-		env.LoadFromFile()
+		envreader.LoadFromFile()
 	}
 
-	err := env.CheckRequiredEnv()
+	err := envreader.CheckRequiredEnv()
 
 	if err != nil {
 		panic(err)
