@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"iam/pkg/apperrors"
 	"iam/pkg/httphelpers"
 	"iam/src/core/ports/primaryports"
 	"net/http"
@@ -32,8 +33,21 @@ func (h *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 	answer, err := h.usersService.Register(args)
 
 	if err != nil {
-		fmt.Println(err)
-		httphelpers.WriteError(http.StatusInternalServerError, "error", err.Error())(w, r)
+		switch err.Error() {
+		case apperrors.InvalidAuthMethod:
+			fallthrough
+		case apperrors.InvalidUsername:
+			fallthrough
+		case apperrors.InvalidEmail:
+			httphelpers.WriteError(http.StatusBadRequest, "error", err.Error())(w, r)
+		case apperrors.UsernameAlreadyExists:
+			fallthrough
+		case apperrors.EmailAlreadyExists:
+			httphelpers.WriteError(http.StatusConflict, "error", err.Error())(w, r)
+		default:
+			fmt.Println(err)
+			httphelpers.WriteError(http.StatusInternalServerError, "error", apperrors.ServerError)(w, r)
+		}
 		return
 	}
 

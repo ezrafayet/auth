@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"iam/pkg/apperrors"
 	"net/mail"
 	"strings"
 )
@@ -14,11 +15,11 @@ func ParseAndValidateEmail(email string) (Email, error) {
 	parsedEmail, err := mail.ParseAddress(email)
 
 	if err != nil {
-		return "", errors.New("INVALID_EMAIL")
+		return "", err
 	}
 
 	if len(parsedEmail.Address) > 100 {
-		return "", errors.New("INVALID_EMAIL")
+		return "", errors.New(apperrors.InvalidEmail)
 	}
 
 	return Email(parsedEmail.Address), nil

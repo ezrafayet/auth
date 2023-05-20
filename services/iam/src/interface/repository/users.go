@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/lib/pq"
+	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
 	"time"
@@ -22,7 +23,7 @@ func (r *UsersRepository) SaveUser(user model.UserModel, authMethod model.UsersA
 	var txErr error
 	tx, txErr := r.db.Begin()
 	if txErr != nil {
-		return errors.New("SERVER_ERROR")
+		return txErr
 	}
 	defer func(tx *sql.Tx) {
 		switch txErr {
@@ -42,20 +43,18 @@ func (r *UsersRepository) SaveUser(user model.UserModel, authMethod model.UsersA
 	if txErr != nil {
 		if pgErr, ok := txErr.(*pq.Error); ok {
 			if pgErr.Code == "23505" && pgErr.Constraint == "users_unique_fingerprint" {
-				return errors.New("USERNAME_NOT_AVAILABLE")
+				return errors.New(apperrors.UsernameAlreadyExists)
 			} else if pgErr.Code == "23505" && pgErr.Constraint == "users_unique_email" {
-				return errors.New("EMAIL_NOT_AVAILABLE")
+				return errors.New(apperrors.EmailAlreadyExists)
 			}
 		}
-		fmt.Println(txErr)
-		return errors.New("SERVER_ERROR")
+		return errors.New(apperrors.ServerError)
 	}
 
 	_, txErr = tx.Exec("INSERT INTO users_auth_methods(id, user_id, auth_method) VALUES ($1, $2, $3)", authMethod.Id, authMethod.UserId, authMethod.AuthMethod)
 
 	if txErr != nil {
-		fmt.Println(txErr)
-		return errors.New("SERVER_ERROR")
+		return txErr
 	}
 
 	return nil

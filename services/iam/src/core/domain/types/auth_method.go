@@ -1,6 +1,9 @@
 package types
 
-import "errors"
+import (
+	"errors"
+	"iam/pkg/apperrors"
+)
 
 type AuthMethod int8
 
@@ -25,6 +28,6 @@ func ParseAndValidateAuthMethod(authMethod string) (AuthMethod, error) {
 	case authMethodsNames[AuthMethodMagicLink]:
 		return AuthMethodMagicLink, nil
 	default:
-		return 127, errors.New("INVALID_AUTH_METHOD")
+		return 127, errors.New(apperrors.InvalidAuthMethod)
 	}
 }

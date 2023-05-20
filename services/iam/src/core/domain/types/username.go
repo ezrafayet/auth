@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"iam/pkg/apperrors"
 	"strings"
 )
 
@@ -12,18 +13,18 @@ type UsernameFingerprint string
 
 func ParseAndValidateUsername(username string) (Username, error) {
 	if len(username) > 40 || len(username) < 2 {
-		return "", errors.New("INVALID_USERNAME")
+		return "", errors.New(apperrors.InvalidUsername)
 	}
 	if username[0] == '-' || username[len(username)-1] == '-' {
-		return "", errors.New("NO_TRAILING_OR_LEADING_DASH")
+		return "", errors.New(apperrors.InvalidUsername)
 	}
 	if username[0] == '_' || username[len(username)-1] == '_' {
-		return "", errors.New("NO_TRAILING_OR_LEADING_UNDERSCORE")
+		return "", errors.New(apperrors.InvalidUsername)
 	}
 	authorizedCharacters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"
 	for _, char := range username {
 		if !strings.ContainsRune(authorizedCharacters, char) {
-			return "", errors.New("INVALID_USERNAME")
+			return "", errors.New(apperrors.InvalidUsername)
 		}
 	}
 	return Username(username), nil

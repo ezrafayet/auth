@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
 	"iam/src/core/ports/primaryports"
@@ -11,12 +13,14 @@ type UsersService struct {
 	usersRepository secondaryports.UsersRepository
 }
 
+// NewUserService initializes a new instance of UsersService with the provided repositories
 func NewUserService(usersRepository secondaryports.UsersRepository) *UsersService {
 	return &UsersService{
 		usersRepository: usersRepository,
 	}
 }
 
+// Register registers a new user
 func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.RegisterAnswer, error) {
 	authMethod, err := types.ParseAndValidateAuthMethod(args.AuthMethod)
 
@@ -27,7 +31,12 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 	email, err := types.ParseAndValidateEmail(args.Email)
 
 	if err != nil {
-		return primaryports.RegisterAnswer{}, err
+		switch err.Error() {
+		case apperrors.InvalidEmail:
+			return primaryports.RegisterAnswer{}, err
+		default:
+			return primaryports.RegisterAnswer{}, errors.New(apperrors.InvalidEmail)
+		}
 	}
 
 	username, err := types.ParseAndValidateUsername(args.Username)
@@ -37,10 +46,6 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 	}
 
 	user := model.NewUserModel(username, email, types.NewTimestamp())
-
-	if err != nil {
-		return primaryports.RegisterAnswer{}, err
-	}
 
 	userAuthMethod := model.NewUsersAuthMethodsModel(user.Id, authMethod)
 
