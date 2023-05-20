@@ -2,7 +2,6 @@ package primaryports
 
 type UsersService interface {
 	Register(args RegisterArgs) (RegisterAnswer, error)
-	// WhoAmI() error
 }
 
 type EmailVerificationService interface {
@@ -11,9 +10,5 @@ type EmailVerificationService interface {
 }
 
 type AuthenticationService interface {
-	// MagicLink() error
-	// Token() error
-	// RefreshToken() error
-	// RevokeToken() error
-	// VerifyToken() error
+	SendMagicLink(args SendMagicLinkArgs) (SendMagicLinkAnswer, error)
 }

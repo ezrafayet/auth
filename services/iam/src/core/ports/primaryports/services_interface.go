@@ -31,3 +31,13 @@ type ConfirmEmailArgs struct {
 type ConfirmEmailAnswer struct {
 	AuthorizationCode string `json:"authorizationCode"`
 }
+
+// Interfaces for service: authentication
+
+type SendMagicLinkArgs struct {
+	Email string `json:"email"`
+}
+
+type SendMagicLinkAnswer struct {
+	AuthorizationCode string `json:"authorizationCode"`
+}
