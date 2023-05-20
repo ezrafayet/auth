@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"iam/src/core/services"
 	"iam/src/infra/emailprovider"
+	"iam/src/interface/dbrepository"
 	"iam/src/interface/emailrepository"
 	"iam/src/interface/handlers"
-	"iam/src/interface/repository"
 )
 
 type Registry struct {
@@ -16,9 +16,9 @@ type Registry struct {
 
 func NewRegistry(db *sql.DB, emailProvider *emailprovider.Provider) *Registry {
 	// Repositories
-	var usersRepository = repository.NewUsersRepository(db)
-	var verificationCodeRepository = repository.NewVerificationCodeRepository(db)
-	var authorizationCodeRepository = repository.NewAuthorizationCodeRepository(db)
+	var usersRepository = dbrepository.NewUsersRepository(db)
+	var verificationCodeRepository = dbrepository.NewVerificationCodeRepository(db)
+	var authorizationCodeRepository = dbrepository.NewAuthorizationCodeRepository(db)
 
 	// Email repository
 	var emailRepository = emailrepository.NewEmailRepository(emailProvider)

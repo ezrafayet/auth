@@ -21,7 +21,12 @@ func NewEmailProvider() *Provider {
 }
 
 func (e *Provider) SendEmail(email string, subject string, keyValues map[string]any) error {
-	// todo: replace this by sending an api request to an email provider
-	fmt.Println("----> Sending email to", email, "with subject", subject, "and keyValues", keyValues, "using api key", e.apiKey)
+	if os.Getenv("ENV") == "DEV" {
+		fmt.Println("[Gate Keeper] ----> Sending email to", email, "with subject", subject, "and keyValues", keyValues)
+	} else {
+		// todo: implement
+		fmt.Println("[Gate Keeper] ----> Sending email to", email, "with subject", subject)
+	}
+
 	return nil
 }
