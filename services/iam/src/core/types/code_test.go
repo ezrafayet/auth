@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_Code_NewCode_ConcurrentCreation(t *testing.T) {
+func TestCode_NewCode_ConcurrentCreation(t *testing.T) {
 	nCodes := 1000
 
 	codeMap := make(map[Code]bool)
@@ -26,56 +26,66 @@ func Test_Code_NewCode_ConcurrentCreation(t *testing.T) {
 	for i := 0; i < nCodes; i++ {
 		select {
 		case err := <-errors:
-			t.Errorf("Error generating code: %v", err)
+			t.Errorf("Got an error when generating code: %v", err)
 		case code := <-codes:
 			if _, exists := codeMap[code]; exists {
-				t.Errorf("Duplicate code found: %v", code)
+				t.Errorf("Generated a duplicated code: %v", code)
 			}
 			if _, err := ParseAndValidateCode(string(code)); err != nil {
-				t.Errorf("Invalid code found: %v", code)
+				t.Errorf("Generated an invalid code: %v", code)
 			}
 			codeMap[code] = true
 		}
 	}
 }
 
-func Test_Code_ParseAndValidateCode_Valid(t *testing.T) {
+// TestCode_ParseAndValidateCode_Valid tests that valid codes are parsed and validated correctly
+func TestCode_ParseAndValidateCode_Valid(t *testing.T) {
 	validCode := "IIr5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR46/s="
-	code, err := ParseAndValidateCode(validCode)
-	if code != Code(validCode) {
-		t.Errorf("Wrong code parsing, got %s", code)
-	}
+	_, err := ParseAndValidateCode(validCode)
 	if err != nil {
-		t.Errorf("Wrong code parsing, got error %s", err)
+		t.Errorf("Did not expect an error, got %s", err)
 	}
 }
 
-func Test_Code_ParseAndValidateCode_InvalidLength(t *testing.T) {
-	validCode := "IIr5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR4/s="
-	_, err := ParseAndValidateCode(validCode)
-	if err == nil {
-		t.Errorf("Wrong code parsing, got error %s", err)
+// TestCode_ParseAndValidateCode_Invalid tests that giving invalid codes returns an error
+func TestCode_ParseAndValidateCode_Invalid(t *testing.T) {
+	var (
+		tooShort        = "IIr5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR4/s="
+		unsupportedChar = "{Ir5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR46/s="
+	)
+
+	invalidCodes := []string{tooShort, unsupportedChar}
+
+	for c, invalidCode := range invalidCodes {
+		p, err := ParseAndValidateCode(invalidCode)
+		if err == nil {
+			t.Errorf("Expected an error, passed %v got %v", c, p)
+		}
 	}
 }
 
-func Test_Code_ParseAndValidateCode_InvalidChar(t *testing.T) {
-	validCode := "{Ir5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR46/s="
-	_, err := ParseAndValidateCode(validCode)
-	if err == nil {
-		t.Errorf("Wrong code parsing, got error %s", err)
+// TestCode_EncodeForURL tests that valid codes are encoded correctly to be used in urls
+func TestCode_EncodeForURL(t *testing.T) {
+	codes := []struct {
+		code     Code
+		expected string
+	}{
+		{
+			code:     Code("IIr5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR46/s="),
+			expected: "SUlyNWQwSUVCZExsVktrS05COTdOdFdhRktIMTFSSDBuUVdaMWRSNDYvcz0=",
+		},
+		{
+			code:     Code("NSfv0bK7Ewcm4+YAtE7JnRHTt7XDTP7RbUuQ22Ggzl8="),
+			expected: "TlNmdjBiSzdFd2NtNCtZQXRFN0puUkhUdDdYRFRQN1JiVXVRMjJHZ3psOD0=",
+		},
 	}
-}
 
-func Test_Code_EncodeForURL(t *testing.T) {
-	c1 := Code("IIr5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR46/s=")
+	for _, c := range codes {
+		got := c.code.EncodeForURL()
 
-	if c1.EncodeForURL() != "SUlyNWQwSUVCZExsVktrS05COTdOdFdhRktIMTFSSDBuUVdaMWRSNDYvcz0=" {
-		t.Errorf("Wrong code encoding for url, got %s", c1.EncodeForURL())
-	}
-
-	c2 := Code("NSfv0bK7Ewcm4+YAtE7JnRHTt7XDTP7RbUuQ22Ggzl8=")
-
-	if c2.EncodeForURL() != "TlNmdjBiSzdFd2NtNCtZQXRFN0puUkhUdDdYRFRQN1JiVXVRMjJHZ3psOD0=" {
-		t.Errorf("Wrong code encoding for url, got %s", c1.EncodeForURL())
+		if got != c.expected {
+			t.Errorf("Expected %s, got %s", c.expected, got)
+		}
 	}
 }

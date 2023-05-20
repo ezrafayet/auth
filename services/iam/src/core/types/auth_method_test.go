@@ -4,50 +4,60 @@ import (
 	"testing"
 )
 
-func Test_AuthMethod_String_Password(t *testing.T) {
+// TestAuthMethod_String_Password tests that the code 0 is converted to "password"
+func TestAuthMethod_String_Password(t *testing.T) {
 	var a AuthMethod = 0
-	if a.String() != "password" {
-		t.Errorf("Did not get the correct auth method, got %v", a.String())
+	expected := "password"
+	result := a.String()
+	if result != expected {
+		t.Errorf("Expected %v, got %v", "password", result)
 	}
 }
 
-func Test_AuthMethod_String_MagicLink(t *testing.T) {
+// TestAuthMethod_String_MagicLink tests that the code 1 is converted to "magic-link"
+func TestAuthMethod_String_MagicLink(t *testing.T) {
 	var a AuthMethod = 1
-	if a.String() != "magic-link" {
-		t.Errorf("Did not get the correct auth method, got %v", a.String())
+	expected := "magic-link"
+	result := a.String()
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }
 
-func Test_AuthMethod_String_Invalid(t *testing.T) {
+// TestAuthMethod_String_Invalid tests that an invalid code is converted to "unknown"
+func TestAuthMethod_String_Invalid(t *testing.T) {
 	var a AuthMethod = 127
-	if a.String() != "unknown" {
-		t.Errorf("Did not get the correct auth method, got %v", a.String())
+	expected := "unknown"
+	result := a.String()
+	if result != expected {
+		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }
 
-func Test_AuthMethod_ParseAndValidate_Password(t *testing.T) {
+// TestAuthMethod_ParseAndValidate_Password tests that "password" is converted to 0
+func TestAuthMethod_ParseAndValidate_Password(t *testing.T) {
 	m, err := ParseAndValidateAuthMethod("password")
-	if m != 0 {
-		t.Errorf("ParseAndValidateAuthMethod() = %v, want %v", m, AuthMethodPassword)
-	}
-	if err != nil {
-		t.Errorf("ParseAndValidateAuthMethod() = %v, want %v", err, nil)
+	expectedM := 0
+	expectedErr := error(nil)
+	if int(m) != expectedM || err != expectedErr {
+		t.Errorf("Expected (%v, %v) got (%v, %v)", expectedM, expectedErr, m, err)
 	}
 }
 
-func Test_ParseAndValidateAuthMethod_MagicLink(t *testing.T) {
+// TestAuthMethod_ParseAndValidate_MagicLink tests that "magic-link" is converted to 1
+func TestAuthMethod_ParseAndValidate_MagicLink(t *testing.T) {
 	m, err := ParseAndValidateAuthMethod("magic-link")
-	if m != 1 {
-		t.Errorf("ParseAndValidateAuthMethod() = %v, want %v", m, AuthMethodPassword)
-	}
-	if err != nil {
-		t.Errorf("ParseAndValidateAuthMethod() = %v, want %v", err, nil)
+	expectedM := 1
+	expectedErr := error(nil)
+	if int(m) != expectedM || err != expectedErr {
+		t.Errorf("Expected (%v, %v) got (%v, %v)", expectedM, expectedErr, m, err)
 	}
 }
 
-func Test_ParseAndValidateAuthMethod_Invalid(t *testing.T) {
+// TestAuthMethod_ParseAndValidate_Invalid tests that passing an invalid string gives an error
+func TestAuthMethod_ParseAndValidate_Invalid(t *testing.T) {
 	_, err := ParseAndValidateAuthMethod("foobar")
 	if err == nil {
-		t.Errorf("ParseAndValidateAuthMethod() = %v, want %v", err, nil)
+		t.Errorf("Expected an error")
 	}
 }
