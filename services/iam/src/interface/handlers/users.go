@@ -37,7 +37,7 @@ func (h *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httphelpers.WriteSuccess(http.StatusOK, "User created successfully", answer)(w, r)
+	httphelpers.WriteSuccess(http.StatusCreated, "User created successfully", answer)(w, r)
 }
 
 func (h *UsersHandler) WhoAmI(w http.ResponseWriter, r *http.Request) {

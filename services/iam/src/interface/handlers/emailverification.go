@@ -37,7 +37,7 @@ func (h *EmailVerificationHandler) SendVerificationEmail(w http.ResponseWriter, 
 		return
 	}
 
-	httphelpers.WriteSuccess(http.StatusOK, "Verification code sent successfully", struct{}{})(w, r)
+	httphelpers.WriteSuccess(http.StatusNoContent, "Verification code sent successfully", struct{}{})(w, r)
 }
 
 func (h *EmailVerificationHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
@@ -62,5 +62,5 @@ func (h *EmailVerificationHandler) ConfirmEmail(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	httphelpers.WriteSuccess(http.StatusOK, "Email verified successfully", answer)(w, r)
+	httphelpers.WriteSuccess(http.StatusAccepted, "Email verified successfully", answer)(w, r)
 }
