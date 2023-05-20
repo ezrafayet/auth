@@ -5,6 +5,7 @@ package database
 
 import (
 	"database/sql"
+	"iam/pkg/apperrors"
 	"os"
 )
 
@@ -12,7 +13,7 @@ func ConnectDB() *sql.DB {
 	dbConnectionString := os.Getenv("DATABASE_CONNECTION_STRING")
 
 	if dbConnectionString == "" {
-		panic("DATABASE_CONNECTION_STRING is not set")
+		panic(apperrors.DatabaseConnectionStringNotSet)
 	}
 
 	db, err := sql.Open("postgres", dbConnectionString)

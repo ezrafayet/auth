@@ -8,6 +8,7 @@ import (
 	"iam/pkg/envreader"
 	"iam/pkg/httphelpers"
 	"iam/src/infra/database"
+	"iam/src/infra/emailprovider"
 	"iam/src/infra/registry"
 	"net/http"
 	"os"
@@ -27,9 +28,12 @@ func init() {
 
 func Start() error {
 	db := database.ConnectDB()
+
 	defer database.CloseDB(db)
 
-	r := registry.NewRegistry(db)
+	emailProvider := emailprovider.NewEmailProvider()
+
+	r := registry.NewRegistry(db, emailProvider)
 
 	router := chi.NewRouter()
 

@@ -1,5 +1,11 @@
 package apperrors
 
+// Environment variables not set
+var (
+	DatabaseConnectionStringNotSet = "DATABASE_CONNECTION_STRING_NOT_SET"
+	EmailProviderNotSet            = "EMAIL_PROVIDER_NOT_SET"
+)
+
 // Generic errors
 var (
 	ServerError   = "SERVER_ERROR"

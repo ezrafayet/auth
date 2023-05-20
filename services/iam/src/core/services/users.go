@@ -11,12 +11,14 @@ import (
 
 type UsersService struct {
 	usersRepository secondaryports.UsersRepository
+	emailRepository secondaryports.EmailRepository
 }
 
 // NewUserService initializes a new instance of UsersService with the provided repositories
-func NewUserService(usersRepository secondaryports.UsersRepository) *UsersService {
+func NewUserService(usersRepository secondaryports.UsersRepository, emailRepository secondaryports.EmailRepository) *UsersService {
 	return &UsersService{
 		usersRepository: usersRepository,
+		emailRepository: emailRepository,
 	}
 }
 
@@ -54,6 +56,10 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 	if err != nil {
 		return primaryports.RegisterAnswer{}, err
 	}
+
+	go func() {
+		_ = s.emailRepository.WelcomeNewUser(user.Email, user.Username)
+	}()
 
 	return primaryports.RegisterAnswer{
 		UserId: user.Id,

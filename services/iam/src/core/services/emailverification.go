@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
@@ -14,16 +13,19 @@ type EmailVerificationService struct {
 	usersRepository                 secondaryports.UsersRepository
 	emailVerificationCodeRepository secondaryports.EmailVerificationCodeRepository
 	authorizationCodeRepository     secondaryports.AuthorizationCodeRepository
+	emailRepository                 secondaryports.EmailRepository
 }
 
 func NewEmailVerificationService(
 	usersRepository secondaryports.UsersRepository,
 	emailVerificationCodeRepository secondaryports.EmailVerificationCodeRepository,
-	authorizationCodeRepository secondaryports.AuthorizationCodeRepository) *EmailVerificationService {
+	authorizationCodeRepository secondaryports.AuthorizationCodeRepository,
+	emailRepository secondaryports.EmailRepository) *EmailVerificationService {
 	return &EmailVerificationService{
 		usersRepository:                 usersRepository,
 		emailVerificationCodeRepository: emailVerificationCodeRepository,
 		authorizationCodeRepository:     authorizationCodeRepository,
+		emailRepository:                 emailRepository,
 	}
 }
 
@@ -66,7 +68,9 @@ func (e *EmailVerificationService) Send(args primaryports.SendVerificationCodeAr
 		return err
 	}
 
-	fmt.Println("==== Sending email ====", user.Email, verificationCode.Code, verificationCode.Code.EncodeForURL())
+	go func() {
+		_ = e.emailRepository.SendVerificationCode(user.Email, user.Username, verificationCode.Code.EncodeForURL())
+	}()
 
 	return nil
 }
