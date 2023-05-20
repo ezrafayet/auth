@@ -43,6 +43,7 @@ func Start() error {
 
 	router.Get("/api/internal/v1/auth/whoami", nil)
 
+	// /!\ Can issue a userId
 	router.Post("/api/internal/v1/auth/register", r.UsersHandler.Register)
 
 	// Email verification endpoints
@@ -56,6 +57,7 @@ func Start() error {
 	// Authentication endpoints
 
 	// /!\ Can issue an authorization code
+	// /!\ Can issue a userId if email is not verified
 	router.Post("/api/internal/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
 
 	// /!\ Can issue an access and a refresh token
