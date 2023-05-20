@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
+	"iam/src/core/ports/primaryports"
 	"iam/src/core/ports/secondaryports"
 )
 
@@ -25,7 +26,7 @@ func NewEmailVerificationService(
 	}
 }
 
-func (e *EmailVerificationService) Send(args SendVerificationCodeArgs) error {
+func (e *EmailVerificationService) Send(args primaryports.SendVerificationCodeArgs) error {
 	userId, err := types.ParseAndValidateId(args.UserId)
 
 	if err != nil {
@@ -71,54 +72,54 @@ func (e *EmailVerificationService) Send(args SendVerificationCodeArgs) error {
 	return nil
 }
 
-func (e *EmailVerificationService) Confirm(args ConfirmEmailArgs) (ConfirmEmailAnswer, error) {
+func (e *EmailVerificationService) Confirm(args primaryports.ConfirmEmailArgs) (primaryports.ConfirmEmailAnswer, error) {
 	code, err := types.ParseAndValidateCode(args.VerificationCode)
 
 	if err != nil {
-		return ConfirmEmailAnswer{}, err
+		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
 	verificationCode, err := e.emailVerificationCodeRepository.GetCode(code)
 
 	if err != nil {
-		return ConfirmEmailAnswer{}, err
+		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
 	if verificationCode.IsExpired() {
-		return ConfirmEmailAnswer{}, errors.New("CODE_EXPIRED")
+		return primaryports.ConfirmEmailAnswer{}, errors.New("CODE_EXPIRED")
 	}
 
 	err = e.emailVerificationCodeRepository.DeleteCode(code)
 
 	if err != nil {
-		return ConfirmEmailAnswer{}, err
+		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
 	user, err := e.usersRepository.GetUserById(verificationCode.UserId)
 
 	if user.HasEmailVerified() {
-		return ConfirmEmailAnswer{}, errors.New("EMAIL_ALREADY_VERIFIED")
+		return primaryports.ConfirmEmailAnswer{}, errors.New("EMAIL_ALREADY_VERIFIED")
 	}
 
 	err = e.usersRepository.ValidateEmail(verificationCode.UserId)
 
 	if err != nil {
-		return ConfirmEmailAnswer{}, err
+		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
 	authorizationCode, err := model.NewAuthorizationCodeModel(verificationCode.UserId)
 
 	if err != nil {
-		return ConfirmEmailAnswer{}, err
+		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
 	err = e.authorizationCodeRepository.SaveCode(authorizationCode)
 
 	if err != nil {
-		return ConfirmEmailAnswer{}, err
+		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
-	return ConfirmEmailAnswer{
+	return primaryports.ConfirmEmailAnswer{
 		AuthorizationCode: string(authorizationCode.Code),
 	}, nil
 }

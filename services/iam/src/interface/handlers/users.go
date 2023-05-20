@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"iam/pkg/httphelpers"
 	"iam/src/core/ports/primaryports"
-	"iam/src/core/services"
 	"net/http"
 )
 
@@ -20,7 +19,7 @@ func NewUsersHandler(usersService primaryports.UsersService) *UsersHandler {
 }
 
 func (h *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var args services.RegisterArgs
+	var args primaryports.RegisterArgs
 
 	err := json.NewDecoder(r.Body).Decode(&args)
 

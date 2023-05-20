@@ -1,15 +1,13 @@
 package primaryports
 
-import "iam/src/core/services"
-
 type UsersService interface {
-	Register(args services.RegisterArgs) (services.RegisterAnswer, error)
+	Register(args RegisterArgs) (RegisterAnswer, error)
 	// WhoAmI() error
 }
 
 type EmailVerificationService interface {
-	Send(args services.SendVerificationCodeArgs) error
-	Confirm(args services.ConfirmEmailArgs) (services.ConfirmEmailAnswer, error)
+	Send(args SendVerificationCodeArgs) error
+	Confirm(args ConfirmEmailArgs) (ConfirmEmailAnswer, error)
 }
 
 type AuthenticationService interface {

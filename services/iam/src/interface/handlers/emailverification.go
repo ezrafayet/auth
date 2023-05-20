@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"iam/pkg/httphelpers"
 	"iam/src/core/ports/primaryports"
-	"iam/src/core/services"
 	"net/http"
 )
 
@@ -20,7 +19,7 @@ func NewEmailVerificationHandler(emailVerificationService primaryports.EmailVeri
 }
 
 func (h *EmailVerificationHandler) SendVerificationEmail(w http.ResponseWriter, r *http.Request) {
-	var args services.SendVerificationCodeArgs
+	var args primaryports.SendVerificationCodeArgs
 
 	err := json.NewDecoder(r.Body).Decode(&args)
 
@@ -42,7 +41,7 @@ func (h *EmailVerificationHandler) SendVerificationEmail(w http.ResponseWriter, 
 }
 
 func (h *EmailVerificationHandler) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
-	var args services.ConfirmEmailArgs
+	var args primaryports.ConfirmEmailArgs
 
 	err := json.NewDecoder(r.Body).Decode(&args)
 
