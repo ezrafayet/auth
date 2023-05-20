@@ -1,73 +1,45 @@
 package types
 
 import (
+	"strings"
 	"testing"
 )
 
-func Test_ParseAndValidateEmail_AcceptValidEmail1(t *testing.T) {
-	originalEmail := "abc@gmail.com"
-	email, err := ParseAndValidateEmail(originalEmail)
-	if err != nil {
-		t.Error("Expected to accept valid email")
+func TestEmail_ParseAndValidateEmail_Valid(t *testing.T) {
+	validEmails := []string{
+		"abc@gmail.com",
+		"abc.def-ghi@gmail.com",
+		"aBc@gmail.com",
+		" aBc@gmail.com ",
 	}
-	if string(email) != originalEmail {
-		t.Error("Email value is not expected")
+
+	for _, validEmail := range validEmails {
+		email, err := ParseAndValidateEmail(validEmail)
+
+		if err != nil {
+			t.Errorf("Ecpected no error, got %s", err)
+		}
+
+		expected := strings.ToLower(strings.TrimSpace(validEmail))
+
+		if string(email) != expected {
+			t.Errorf("Expected %s, got %s", expected, email)
+		}
 	}
 }
 
-func Test_ParseAndValidateEmail_AcceptValidEmail2(t *testing.T) {
-	originalEmail := "abc.def-ghi@gmail.com"
-	email, err := ParseAndValidateEmail(originalEmail)
-	if err != nil {
-		t.Error("Expected to accept valid email")
+func Test_ParseAndValidateEmail_Invalid(t *testing.T) {
+	invalidEmails := []string{
+		"abc",
+		"ab(c@gmail.com",
+		"",
 	}
-	if string(email) != originalEmail {
-		t.Error("Email value is not expected")
-	}
-}
 
-func Test_ParseAndValidateEmail_ReformatAndAcceptEmail1(t *testing.T) {
-	originalEmail := " abc@gmail.com "
-	email, err := ParseAndValidateEmail(originalEmail)
-	if err != nil {
-		t.Error("Expected to accept valid email")
-	}
-	if string(email) != "abc@gmail.com" {
-		t.Error("Email value is not expected")
-	}
-}
+	for _, invalidEmail := range invalidEmails {
+		email, err := ParseAndValidateEmail(invalidEmail)
 
-func Test_ParseAndValidateEmail_ReformatAndAcceptEmail2(t *testing.T) {
-	originalEmail := " aBc@gmail.com "
-	email, err := ParseAndValidateEmail(originalEmail)
-	if err != nil {
-		t.Error("Expected to accept valid email")
-	}
-	if string(email) != "abc@gmail.com" {
-		t.Error("Email value is not expected")
-	}
-}
-
-func Test_ParseAndValidateEmail_RejectInvalidEmail1(t *testing.T) {
-	originalEmail := "abc"
-	_, err := ParseAndValidateEmail(originalEmail)
-	if err == nil {
-		t.Error("Expected to accept valid email")
-	}
-}
-
-func Test_ParseAndValidateEmail_RejectInvalidEmail2(t *testing.T) {
-	originalEmail := "abcd(abc@gmail.com"
-	_, err := ParseAndValidateEmail(originalEmail)
-	if err == nil {
-		t.Error("Expected to accept valid email")
-	}
-}
-
-func Test_ParseAndValidateEmail_RejectInvalidEmail3(t *testing.T) {
-	originalEmail := ""
-	_, err := ParseAndValidateEmail(originalEmail)
-	if err == nil {
-		t.Error("Expected to accept valid email")
+		if err == nil {
+			t.Errorf("Expected %s, got %s", invalidEmail, email)
+		}
 	}
 }

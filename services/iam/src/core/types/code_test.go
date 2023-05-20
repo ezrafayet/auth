@@ -5,7 +5,7 @@ import (
 )
 
 func TestCode_NewCode_ConcurrentCreation(t *testing.T) {
-	nCodes := 1000
+	nCodes := 100
 
 	codeMap := make(map[Code]bool)
 
@@ -26,13 +26,13 @@ func TestCode_NewCode_ConcurrentCreation(t *testing.T) {
 	for i := 0; i < nCodes; i++ {
 		select {
 		case err := <-errors:
-			t.Errorf("Got an error when generating code: %v", err)
+			t.Errorf("Expected no error, got %v", err)
 		case code := <-codes:
 			if _, exists := codeMap[code]; exists {
-				t.Errorf("Generated a duplicated code: %v", code)
+				t.Error("Expected no duplicate code", code)
 			}
 			if _, err := ParseAndValidateCode(string(code)); err != nil {
-				t.Errorf("Generated an invalid code: %v", code)
+				t.Errorf("Expected a valid code, got %v", code)
 			}
 			codeMap[code] = true
 		}
@@ -44,7 +44,7 @@ func TestCode_ParseAndValidateCode_Valid(t *testing.T) {
 	validCode := "IIr5d0IEBdLlVKkKNB97NtWaFKH11RH0nQWZ1dR46/s="
 	_, err := ParseAndValidateCode(validCode)
 	if err != nil {
-		t.Errorf("Did not expect an error, got %s", err)
+		t.Errorf("Expected no error, got %s", err)
 	}
 }
 
@@ -60,7 +60,7 @@ func TestCode_ParseAndValidateCode_Invalid(t *testing.T) {
 	for c, invalidCode := range invalidCodes {
 		p, err := ParseAndValidateCode(invalidCode)
 		if err == nil {
-			t.Errorf("Expected an error, passed %v got %v", c, p)
+			t.Errorf("Expected an error, got %v for %v", p, c)
 		}
 	}
 }

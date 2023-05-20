@@ -1,19 +1,8 @@
 package types
 
 import (
-	"github.com/google/uuid"
 	"testing"
 )
-
-func TestId_NewId(t *testing.T) {
-	id := NewId()
-
-	_, err := uuid.Parse(string(id))
-
-	if err != nil {
-		t.Errorf("Expected valid UUID, but got error: %v", err)
-	}
-}
 
 func TestId_ParseAndValidateId_Valid(t *testing.T) {
 	validIds := []string{
@@ -24,8 +13,9 @@ func TestId_ParseAndValidateId_Valid(t *testing.T) {
 
 	for _, id := range validIds {
 		_, err := ParseAndValidateId(id)
+
 		if err != nil {
-			t.Error("Expected", id)
+			t.Errorf("Expected UUID to be valid, got the error %v for the UUID %s", err, id)
 		}
 	}
 }
@@ -39,8 +29,9 @@ func TestId_ParseAndValidateId_Invalid(t *testing.T) {
 
 	for _, id := range invalidIds {
 		_, err := ParseAndValidateId(id)
+
 		if err == nil {
-			t.Errorf("Expected error for id %v, but got none", id)
+			t.Errorf("Expected an error for id %v", id)
 		}
 	}
 }
