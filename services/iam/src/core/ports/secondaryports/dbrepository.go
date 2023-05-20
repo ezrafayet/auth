@@ -8,6 +8,7 @@ import (
 type UsersRepository interface {
 	SaveUser(user model.UserModel, authMethod model.UsersAuthMethodsModel) error
 	GetUserById(id types.Id) (model.UserModel, error)
+	GetUserByEmail(email types.Email) (model.UserModel, error)
 	ValidateEmail(userId types.Id) error
 }
 

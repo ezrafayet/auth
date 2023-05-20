@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {useState} from "react";
 
 export default () => {
@@ -27,5 +26,8 @@ export default () => {
         <input placeholder={"username"} value={username} onChange={(e) => setUsername(e.target.value)}/>
 
         <button onClick={signup}>Sign up</button>
+
+        <br/>
+        <a href={"/auth/email-verification/xxx"} target={"_blank"} />
     </>
 }

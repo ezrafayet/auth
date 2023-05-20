@@ -47,6 +47,7 @@ func (h *AuthenticationHandler) SendMagicLink(w http.ResponseWriter, r *http.Req
 			fmt.Println(err)
 			httphelpers.WriteError(http.StatusInternalServerError, "error", apperrors.ServerError)(w, r)
 		}
+		return
 	}
 
 	httphelpers.WriteSuccess(http.StatusAccepted, "Authentication successful", answer)(w, r)

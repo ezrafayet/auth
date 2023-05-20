@@ -104,6 +104,50 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 	return user, nil
 }
 
+func (r *UsersRepository) GetUserByEmail(email types.Email) (model.UserModel, error) {
+	var user model.UserModel
+
+	var (
+		id                  types.Id
+		createdAt           time.Time
+		username            string
+		usernameFingerprint string
+		emailVerified       bool
+		emailVerifiedAt     sql.NullTime
+		blocked             bool
+		deleted             bool
+		deletedAt           sql.NullTime
+	)
+
+	txErr := r.db.QueryRow("SELECT id, created_at, username, username_fingerprint, email_verified, email_verified_at, blocked, deleted, deleted_at FROM users WHERE email = $1", string(email)).Scan(&id, &createdAt, &username, &usernameFingerprint, &emailVerified, &emailVerifiedAt, &blocked, &deleted, &deletedAt)
+
+	if txErr != nil {
+		fmt.Println(txErr)
+		// todo: handle error better
+		return user, errors.New(apperrors.UserNotFound)
+	}
+
+	var parsedEmailValidatedAt time.Time
+
+	if emailVerifiedAt.Valid {
+		parsedEmailValidatedAt = emailVerifiedAt.Time
+	}
+
+	var parsedDeletedAt time.Time
+
+	if deletedAt.Valid {
+		parsedDeletedAt = deletedAt.Time
+	}
+
+	err := user.Hydrate(string(id), createdAt, username, usernameFingerprint, string(email), emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
 func (r *UsersRepository) ValidateEmail(userId types.Id) error {
 	_, txErr := r.db.Exec("UPDATE users SET email_verified = true, email_verified_at = $1 WHERE id = $2", time.Now().UTC(), userId)
 
