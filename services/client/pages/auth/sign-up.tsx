@@ -7,7 +7,7 @@ export default () => {
     async function signup () {
         const answer = await fetch("/api/internal/v1/auth/register", {
             method: "POST",
-            body: JSON.stringify({ "authMethod": "magic-link", email, username })
+            body: JSON.stringify({ "authType": "magic-link", email, username })
         })
         const answerJson = await answer.json();
         if (answerJson.status !== "success") {

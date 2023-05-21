@@ -19,7 +19,7 @@ func NewUsersRepository(db *sql.DB) *UsersRepository {
 	return &UsersRepository{db: db}
 }
 
-func (r *UsersRepository) SaveUser(user model.UserModel, authMethod model.UserAuthMethodModel) error {
+func (r *UsersRepository) SaveUser(user model.UserModel, authType model.UserAuthTypeModel) error {
 	var txErr error
 	tx, txErr := r.db.Begin()
 	if txErr != nil {
@@ -51,7 +51,7 @@ func (r *UsersRepository) SaveUser(user model.UserModel, authMethod model.UserAu
 		return errors.New(apperrors.ServerError)
 	}
 
-	_, txErr = tx.Exec("INSERT INTO users_auth_methods(id, user_id, auth_method) VALUES ($1, $2, $3)", authMethod.Id, authMethod.UserId, authMethod.AuthMethod)
+	_, txErr = tx.Exec("INSERT INTO users_auth_types(id, user_id, auth_type) VALUES ($1, $2, $3)", authType.Id, authType.UserId, authType.AuthType)
 
 	if txErr != nil {
 		return txErr

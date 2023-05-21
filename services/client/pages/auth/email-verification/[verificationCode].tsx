@@ -19,6 +19,21 @@ export default (props) => {
                     console.error(answerJson);
                     return;
                 }
+                const authorizationCode = answerJson.data.authorizationCode;
+                const answer2 = await fetch("/api/internal/v1/auth/token", {
+                    method: "POST",
+                    body: JSON.stringify({ "authorizationCode": authorizationCode })
+                })
+                const answer2Json = await answer2.json()
+                if (answer2Json.status !== "success") {
+                    console.error(answerJson);
+                    return;
+                }
+                const accessToken = answer2Json.data.accessToken
+                const refreshToken = answer2Json.data.refreshToken
+                // store in local storage
+                localStorage.setItem("accessToken", accessToken)
+                localStorage.setItem("refreshToken", refreshToken)
             }
         })()
     }, [verificationCode])

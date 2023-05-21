@@ -19,6 +19,11 @@ export default (props) => {
                     console.error(answerJson);
                     return;
                 }
+                const accessToken = answerJson.data.accessToken
+                const refreshToken = answerJson.data.refreshToken
+                // store in local storage
+                localStorage.setItem("accessToken", accessToken)
+                localStorage.setItem("refreshToken", refreshToken)
             }
         })()
     }, [authorizationCode])

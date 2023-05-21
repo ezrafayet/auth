@@ -34,7 +34,7 @@ func (h *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		switch err.Error() {
-		case apperrors.InvalidAuthMethod:
+		case apperrors.InvalidAuthType:
 			fallthrough
 		case apperrors.InvalidUsername:
 			fallthrough

@@ -24,7 +24,7 @@ func NewUserService(usersRepository secondaryports.UsersRepository, emailReposit
 
 // Register registers a new user
 func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.RegisterAnswer, error) {
-	authMethod, err := types.ParseAndValidateAuthMethod(args.AuthMethod)
+	authType, err := types.ParseAndValidateAuthType(args.AuthType)
 
 	// todo: acceptance terms and conditions
 	// todo: acceptance newsletter
@@ -53,7 +53,7 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 
 	user := model.NewUserModel(username, email, types.NewTimestamp())
 
-	userAuthMethod := model.NewUsersAuthMethodsModel(user.Id, authMethod)
+	userAuthMethod := model.NewUserAuthTypeModel(user.Id, authType)
 
 	err = s.usersRepository.SaveUser(user, userAuthMethod) // todo: role, terms, newsletter
 
