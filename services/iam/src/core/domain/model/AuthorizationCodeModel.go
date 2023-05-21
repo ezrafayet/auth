@@ -27,7 +27,7 @@ func NewAuthorizationCodeModel(userId types.Id) (AuthorizationCodeModel, error) 
 		UserId:    userId,
 		Code:      code,
 		CreatedAt: timestamp,
-		ExpiresAt: timestamp.AddSeconds(1 * 60),
+		ExpiresAt: timestamp.AddSeconds(15),
 	}, nil
 }
 

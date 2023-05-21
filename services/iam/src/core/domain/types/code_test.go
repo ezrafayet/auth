@@ -5,7 +5,7 @@ import (
 )
 
 func TestCode_NewCode_ConcurrentCreation(t *testing.T) {
-	nCodes := 100
+	nCodes := 1000
 
 	codeMap := make(map[Code]bool)
 

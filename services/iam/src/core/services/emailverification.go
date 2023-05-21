@@ -82,7 +82,7 @@ func (e *EmailVerificationService) Confirm(args primaryports.ConfirmEmailArgs) (
 		return primaryports.ConfirmEmailAnswer{}, err
 	}
 
-	verificationCode, err := e.emailVerificationCodeRepository.GetCode(code)
+	verificationCode, err := e.emailVerificationCodeRepository.GetCode(code) // turn this into a get and delete ?
 
 	if err != nil {
 		return primaryports.ConfirmEmailAnswer{}, err
@@ -135,6 +135,7 @@ func (e *EmailVerificationService) Confirm(args primaryports.ConfirmEmailArgs) (
 	}
 
 	return primaryports.ConfirmEmailAnswer{
+		// here the code does not need to be encoded because it is not used in a URL
 		AuthorizationCode: string(authorizationCode.Code),
 	}, nil
 }

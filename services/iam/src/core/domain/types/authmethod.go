@@ -18,6 +18,7 @@ func (a AuthMethod) String() string {
 	if a < AuthMethodPassword || a > AuthMethodMagicLink {
 		return "unknown"
 	}
+
 	return authMethodsNames[a]
 }
 

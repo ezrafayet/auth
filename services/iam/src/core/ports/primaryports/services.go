@@ -11,4 +11,5 @@ type EmailVerificationService interface {
 
 type AuthenticationService interface {
 	SendMagicLink(args SendMagicLinkArgs) (SendMagicLinkAnswer, error)
+	Authenticate(args GetAccessTokenArgs) (GetAccessTokenAnswer, error)
 }

@@ -61,7 +61,7 @@ func Start() error {
 	router.Post("/api/internal/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
 
 	// /!\ Can issue an access and a refresh token
-	router.Post("/api/internal/v1/auth/token", nil)
+	router.Post("/api/internal/v1/auth/token", r.AuthenticationHandler.Authenticate)
 
 	router.Post("/api/internal/v1/auth/token/authorize", nil)
 

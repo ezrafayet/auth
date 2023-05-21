@@ -41,3 +41,12 @@ type SendMagicLinkArgs struct {
 type SendMagicLinkAnswer struct {
 	AuthorizationCode string `json:"authorizationCode"`
 }
+
+type GetAccessTokenArgs struct {
+	AuthorizationCode string `json:"authorizationCode"`
+}
+
+type GetAccessTokenAnswer struct {
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+}

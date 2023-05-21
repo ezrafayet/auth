@@ -74,3 +74,60 @@ func (a *AuthenticationService) SendMagicLink(args primaryports.SendMagicLinkArg
 
 	return primaryports.SendMagicLinkAnswer{}, nil
 }
+
+func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArgs) (primaryports.GetAccessTokenAnswer, error) {
+	code, err := types.ParseAndValidateCode(args.AuthorizationCode)
+
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
+
+	authorizationCode, err := a.authorizationCodeRepository.GetCode(code)
+
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
+
+	if authorizationCode.IsExpired() {
+		return primaryports.GetAccessTokenAnswer{}, errors.New(apperrors.AuthorizationCodeExpired)
+	}
+
+	user, err := a.usersRepository.GetUserById(authorizationCode.UserId)
+
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
+
+	if !user.HasEmailVerified() {
+		return primaryports.GetAccessTokenAnswer{}, errors.New(apperrors.EmailNotVerified)
+	}
+
+	if user.IsBlocked() {
+		return primaryports.GetAccessTokenAnswer{}, errors.New(apperrors.UserBlocked)
+	}
+
+	if user.IsDeleted() {
+		return primaryports.GetAccessTokenAnswer{}, errors.New(apperrors.UserDeleted)
+	}
+
+	accessToken, err := types.NewAccessToken(user.Id, "user")
+
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
+
+	refreshToken, err := types.NewCode()
+
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
+
+	err = a.authorizationCodeRepository.DeleteCode(authorizationCode.Code)
+
+	// todo: save refresh token
+
+	return primaryports.GetAccessTokenAnswer{
+		AccessToken:  string(accessToken),
+		RefreshToken: string(refreshToken),
+	}, nil
+}

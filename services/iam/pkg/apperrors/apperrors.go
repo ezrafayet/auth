@@ -16,6 +16,7 @@ var (
 var (
 	InvalidId         = "INVALID_ID"
 	InvalidAuthMethod = "INVALID_AUTH_METHOD"
+	InvalidRole       = "INVALID_ROLE"
 	InvalidEmail      = "INVALID_EMAIL"
 	InvalidUsername   = "INVALID_USERNAME"
 	InvalidCode       = "INVALID_CODE"
