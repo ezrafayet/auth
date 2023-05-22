@@ -26,15 +26,15 @@ func NewUserService(usersRepository secondaryports.UsersRepository, emailReposit
 func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.RegisterAnswer, error) {
 	authType, err := types.ParseAndValidateAuthType(args.AuthType)
 
-	// todo: acceptance terms and conditions
-	// todo: acceptance newsletter
-	// todo: recaptcha
-
 	if err != nil {
 		return primaryports.RegisterAnswer{}, err
 	}
 
 	email, err := types.ParseAndValidateEmail(args.Email)
+
+	if !args.HasAcceptedTerms || args.AcceptedTermsVersion == "" {
+		return primaryports.RegisterAnswer{}, errors.New(apperrors.RefusedTerms)
+	}
 
 	if err != nil {
 		switch err.Error() {
@@ -55,7 +55,23 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 
 	userAuthMethod := model.NewUserAuthTypeModel(user.Id, authType)
 
-	err = s.usersRepository.SaveUser(user, userAuthMethod) // todo: role, terms, newsletter
+	termsAndConditions := model.NewUserTermsAndConditionsModel(user.Id)
+
+	if args.HasAcceptedTerms && args.AcceptedTermsVersion != "" {
+		termsAndConditions.Accept(args.AcceptedTermsVersion)
+	}
+
+	marketingPreferences := model.NewUserMarketingPreferencesModel(user.Id)
+
+	if args.HasAcceptedNewsletter {
+		marketingPreferences.AcceptNewsletter()
+	}
+
+	if args.HasAcceptedMarketing {
+		marketingPreferences.AcceptMarketing()
+	}
+
+	err = s.usersRepository.SaveUser(user, userAuthMethod, types.RoleUser, termsAndConditions, marketingPreferences)
 
 	if err != nil {
 		return primaryports.RegisterAnswer{}, err

@@ -20,8 +20,7 @@ var (
 	InvalidEmail    = "INVALID_EMAIL"
 	InvalidUsername = "INVALID_USERNAME"
 	InvalidCode     = "INVALID_CODE"
-	UserBlocked     = "USER_BLOCKED"
-	UserDeleted     = "USER_DELETED"
+	RefusedTerms    = "REFUSED_TERMS"
 )
 
 // Database errors
@@ -39,4 +38,6 @@ var (
 	AuthorizationCodeNotFound = "AUTHORIZATION_CODE_NOT_FOUND"
 	VerificationCodeExpired   = "VERIFICATION_CODE_EXPIRED"
 	AuthorizationCodeExpired  = "AUTHORIZATION_CODE_EXPIRED"
+	UserBlocked               = "USER_BLOCKED"
+	UserDeleted               = "USER_DELETED"
 )

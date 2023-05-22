@@ -7,12 +7,13 @@ import (
 // Interfaces for service: user
 
 type RegisterArgs struct {
-	AuthType             string `json:"authType"`
-	Email                string `json:"email"`
-	Username             string `json:"username"`
-	HasAcceptedTerms     bool   `json:"hasAcceptedTerms"`
-	AcceptedTermsVersion string `json:"termsVersion"`
-	HasAcceptedMarketing bool   `json:"hasAcceptedMarketing"`
+	AuthType              string `json:"authType"`
+	Email                 string `json:"email"`
+	Username              string `json:"username"`
+	HasAcceptedTerms      bool   `json:"hasAcceptedTerms"`
+	AcceptedTermsVersion  string `json:"acceptedTermsVersion"`
+	HasAcceptedNewsletter bool   `json:"hasAcceptedNewsletter"`
+	HasAcceptedMarketing  bool   `json:"hasAcceptedMarketing"`
 }
 
 type RegisterAnswer struct {

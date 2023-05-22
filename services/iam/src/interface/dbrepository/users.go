@@ -19,7 +19,12 @@ func NewUsersRepository(db *sql.DB) *UsersRepository {
 	return &UsersRepository{db: db}
 }
 
-func (r *UsersRepository) SaveUser(user model.UserModel, authType model.UserAuthTypeModel) error {
+func (r *UsersRepository) SaveUser(
+	user model.UserModel,
+	authType model.UserAuthTypeModel,
+	role types.Role,
+	termsAndConditions model.UserTermsAndConditionsModel,
+	marketingPreferences model.UserMarketingPreferencesModel) error {
 	var txErr error
 	tx, txErr := r.db.Begin()
 	if txErr != nil {

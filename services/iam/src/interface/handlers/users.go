@@ -39,6 +39,8 @@ func (h *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 		case apperrors.InvalidUsername:
 			fallthrough
 		case apperrors.InvalidEmail:
+			fallthrough
+		case apperrors.RefusedTerms:
 			httphelpers.WriteError(http.StatusBadRequest, "error", err.Error())(w, r)
 		case apperrors.UsernameAlreadyExists:
 			fallthrough
