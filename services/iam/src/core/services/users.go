@@ -82,6 +82,6 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 	}()
 
 	return primaryports.RegisterAnswer{
-		UserId: user.Id,
+		UserId: string(user.Id),
 	}, nil
 }

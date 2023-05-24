@@ -1,9 +1,5 @@
 package primaryports
 
-import (
-	"iam/src/core/domain/types"
-)
-
 // Interfaces for service: user
 
 type RegisterArgs struct {
@@ -17,7 +13,7 @@ type RegisterArgs struct {
 }
 
 type RegisterAnswer struct {
-	UserId types.Id `json:"userId"`
+	UserId string `json:"userId"`
 }
 
 // Interfaces for service: email verification
