@@ -8,6 +8,10 @@
 
 # Quick start
 
+1. Copy iam/.env.example to iam/.env and fill in the required values.
+
+
+2. Run:
 ```
 docker-compose build
 docker-compose up
