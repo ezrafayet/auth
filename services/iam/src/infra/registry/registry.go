@@ -20,6 +20,7 @@ func NewRegistry(db *sql.DB, emailProvider *emailprovider.Provider) *Registry {
 	var usersRepository = dbrepository.NewUsersRepository(db)
 	var verificationCodeRepository = dbrepository.NewVerificationCodeRepository(db)
 	var authorizationCodeRepository = dbrepository.NewAuthorizationCodeRepository(db)
+	var refreshTokenRepository = dbrepository.NewRefreshTokenRepository(db)
 
 	// Email repository
 	var emailRepository = emailrepository.NewEmailRepository(emailProvider)
@@ -27,7 +28,7 @@ func NewRegistry(db *sql.DB, emailProvider *emailprovider.Provider) *Registry {
 	// Services
 	var usersService = services.NewUserService(usersRepository, emailRepository)
 	var verificationCodeService = services.NewEmailVerificationService(usersRepository, verificationCodeRepository, authorizationCodeRepository, emailRepository)
-	var authenticationService = services.NewAuthenticationService(usersRepository, authorizationCodeRepository, emailRepository)
+	var authenticationService = services.NewAuthenticationService(usersRepository, authorizationCodeRepository, emailRepository, refreshTokenRepository)
 
 	// Handlers
 	var usersHandler = handlers.NewUsersHandler(usersService)

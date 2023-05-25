@@ -29,3 +29,7 @@ type AuthorizationCodeRepository interface {
 	GetCode(code types.Code) (model.AuthorizationCodeModel, error)
 	DeleteCode(code types.Code) error
 }
+
+type RefreshTokenRepository interface {
+	SaveToken(refreshToken model.RefreshTokenModel) error
+}

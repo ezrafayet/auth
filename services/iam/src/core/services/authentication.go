@@ -12,17 +12,20 @@ import (
 type AuthenticationService struct {
 	usersRepository             secondaryports.UsersRepository
 	authorizationCodeRepository secondaryports.AuthorizationCodeRepository
+	refreshTokenRepository      secondaryports.RefreshTokenRepository
 	emailRepository             secondaryports.EmailRepository
 }
 
 func NewAuthenticationService(
 	usersRepository secondaryports.UsersRepository,
 	authorizationCodeRepository secondaryports.AuthorizationCodeRepository,
-	emailRepository secondaryports.EmailRepository) *AuthenticationService {
+	emailRepository secondaryports.EmailRepository,
+	refreshTokenRepository secondaryports.RefreshTokenRepository) *AuthenticationService {
 	return &AuthenticationService{
 		usersRepository:             usersRepository,
 		authorizationCodeRepository: authorizationCodeRepository,
 		emailRepository:             emailRepository,
+		refreshTokenRepository:      refreshTokenRepository,
 	}
 }
 
@@ -53,8 +56,7 @@ func (a *AuthenticationService) SendMagicLink(args primaryports.SendMagicLinkArg
 		return primaryports.SendMagicLinkAnswer{}, errors.New(apperrors.UserDeleted)
 	}
 
-	// todo: count existing authorization codes and delete them if there are too many
-	// or delete all existing
+	// todo: count existing authorization codes and block if too many
 
 	authorizationCode, err := model.NewAuthorizationCodeModel(user.Id)
 
@@ -116,7 +118,7 @@ func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArg
 		return primaryports.GetAccessTokenAnswer{}, err
 	}
 
-	refreshToken, err := types.NewCode()
+	refreshToken, err := model.NewRefreshTokenModel(user.Id)
 
 	if err != nil {
 		return primaryports.GetAccessTokenAnswer{}, err
@@ -124,10 +126,18 @@ func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArg
 
 	err = a.authorizationCodeRepository.DeleteCode(authorizationCode.Code)
 
-	// todo: save refresh token
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
+
+	err = a.refreshTokenRepository.SaveToken(refreshToken)
+
+	if err != nil {
+		return primaryports.GetAccessTokenAnswer{}, err
+	}
 
 	return primaryports.GetAccessTokenAnswer{
 		AccessToken:  string(accessToken),
-		RefreshToken: string(refreshToken),
+		RefreshToken: string(refreshToken.Token),
 	}, nil
 }
