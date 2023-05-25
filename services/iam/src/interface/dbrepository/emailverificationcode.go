@@ -20,7 +20,7 @@ func NewVerificationCodeRepository(db *sql.DB) *VerificationCodeRepository {
 }
 
 func (v *VerificationCodeRepository) SaveCode(code model.EmailVerificationCodeModel) error {
-	_, err := v.db.Exec("INSERT INTO email_verification_codes (user_id, code, created_at, expires_at) VALUES ($1, $2, $3, $4)", string(code.UserId), string(code.Code), time.Time(code.CreatedAt), time.Time(code.ExpiresAt))
+	_, err := v.db.Exec("INSERT INTO email_verification_code (user_id, code, created_at, expires_at) VALUES ($1, $2, $3, $4)", string(code.UserId), string(code.Code), time.Time(code.CreatedAt), time.Time(code.ExpiresAt))
 
 	if err != nil {
 		// todo: handle error
@@ -33,7 +33,7 @@ func (v *VerificationCodeRepository) SaveCode(code model.EmailVerificationCodeMo
 func (v *VerificationCodeRepository) CountActiveCodes(userId types.Id) (int, error) {
 	var count int
 
-	err := v.db.QueryRow("SELECT COUNT(*) FROM email_verification_codes WHERE user_id = $1 AND expires_at > $2", string(userId), time.Now().UTC()).Scan(&count)
+	err := v.db.QueryRow("SELECT COUNT(*) FROM email_verification_code WHERE user_id = $1 AND expires_at > $2", string(userId), time.Now().UTC()).Scan(&count)
 
 	if err != nil {
 		// todo: handle error
@@ -49,7 +49,7 @@ func (v *VerificationCodeRepository) GetCode(code types.Code) (model.EmailVerifi
 	var createdAt time.Time
 	var expiresAt time.Time
 
-	err := v.db.QueryRow("SELECT user_id, created_at, expires_at FROM email_verification_codes WHERE code = $1", string(code)).Scan(&userId, &createdAt, &expiresAt)
+	err := v.db.QueryRow("SELECT user_id, created_at, expires_at FROM email_verification_code WHERE code = $1", string(code)).Scan(&userId, &createdAt, &expiresAt)
 
 	if err != nil {
 		// todo: handle error
@@ -66,7 +66,7 @@ func (v *VerificationCodeRepository) GetCode(code types.Code) (model.EmailVerifi
 }
 
 func (v *VerificationCodeRepository) DeleteCode(code types.Code) error {
-	_, err := v.db.Exec("DELETE FROM email_verification_codes WHERE code = $1", string(code))
+	_, err := v.db.Exec("DELETE FROM email_verification_code WHERE code = $1", string(code))
 
 	if err != nil {
 		return err

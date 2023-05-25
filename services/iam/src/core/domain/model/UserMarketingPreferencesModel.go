@@ -5,7 +5,6 @@ import (
 )
 
 type UserMarketingPreferencesModel struct {
-	Id                  types.Id
 	UserId              types.Id
 	AcceptedMarketing   bool
 	UpdatedMarketingAt  types.Timestamp
@@ -15,7 +14,6 @@ type UserMarketingPreferencesModel struct {
 
 func NewUserMarketingPreferencesModel(userId types.Id) UserMarketingPreferencesModel {
 	return UserMarketingPreferencesModel{
-		Id:                  types.NewId(),
 		UserId:              userId,
 		AcceptedMarketing:   false,
 		UpdatedMarketingAt:  types.NewTimestamp(),

@@ -57,8 +57,11 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 
 	termsAndConditions := model.NewUserTermsAndConditionsModel(user.Id)
 
-	if args.HasAcceptedTerms && args.AcceptedTermsVersion != "" {
-		termsAndConditions.Accept(args.AcceptedTermsVersion)
+	// todo: hydrate proper user data - IP, browser data etc.
+	err = termsAndConditions.Accept(args.HasAcceptedTerms, args.AcceptedTermsVersion, "")
+
+	if err != nil {
+		return primaryports.RegisterAnswer{}, err
 	}
 
 	marketingPreferences := model.NewUserMarketingPreferencesModel(user.Id)

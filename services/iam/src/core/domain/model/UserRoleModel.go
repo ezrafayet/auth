@@ -5,15 +5,15 @@ import (
 )
 
 type UserRoleModel struct {
-	Id     types.Id
-	UserId types.Id
-	RoleId types.Role
+	UserId    types.Id
+	RoleId    int8
+	CreatedAt types.Timestamp
 }
 
 func NewUserRoleModel(userId types.Id, role types.Role) UserRoleModel {
 	return UserRoleModel{
-		Id:     types.NewId(),
-		UserId: userId,
-		RoleId: role,
+		UserId:    userId,
+		RoleId:    int8(role),
+		CreatedAt: types.NewTimestamp(),
 	}
 }

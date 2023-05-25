@@ -43,7 +43,7 @@ func (r *UsersRepository) SaveUser(
 		}
 	}(tx)
 
-	_, txErr = tx.Exec("INSERT INTO users(id, created_at, username, username_fingerprint, email) VALUES ($1, $2, $3, $4, $5)", user.Id, time.Time(user.CreatedAt), user.Username, user.UsernameFingerprint, user.Email)
+	_, txErr = tx.Exec("INSERT INTO user_account(id, created_at, username, username_fingerprint, email) VALUES ($1, $2, $3, $4, $5)", user.Id, time.Time(user.CreatedAt), user.Username, user.UsernameFingerprint, user.Email)
 
 	if txErr != nil {
 		if pgErr, ok := txErr.(*pq.Error); ok {
@@ -53,10 +53,28 @@ func (r *UsersRepository) SaveUser(
 				return errors.New(apperrors.EmailAlreadyExists)
 			}
 		}
-		return errors.New(apperrors.ServerError)
+		return txErr
 	}
 
-	_, txErr = tx.Exec("INSERT INTO users_auth_types(id, user_id, auth_type) VALUES ($1, $2, $3)", authType.Id, authType.UserId, authType.AuthType)
+	_, txErr = tx.Exec("INSERT INTO user_auth_type(user_id, auth_type_id, created_at) VALUES ($1, $2, $3)", string(authType.UserId), authType.AuthTypeId, time.Time(authType.CreatedAt))
+
+	if txErr != nil {
+		return txErr
+	}
+
+	_, txErr = tx.Exec("INSERT INTO user_role(user_id, role_id, created_at) VALUES ($1, $2, $3)", string(user.Id), role, time.Time(user.CreatedAt))
+
+	if txErr != nil {
+		return txErr
+	}
+
+	_, txErr = tx.Exec("INSERT INTO user_terms_and_conditions(user_id, accepted, accepted_at, terms_version, user_data) VALUES ($1, $2, $3, $4, $5)", string(termsAndConditions.UserId), termsAndConditions.Accepted, time.Time(termsAndConditions.AcceptedAt), termsAndConditions.TermsVersion, termsAndConditions.UserData)
+
+	if txErr != nil {
+		return txErr
+	}
+
+	_, txErr = tx.Exec("INSERT INTO user_marketing_preferences(user_id, accepted_marketing, updated_marketing_at, accepted_newsletter, updated_newsletter_at) VALUES ($1, $2, $3, $4, $5)", string(marketingPreferences.UserId), marketingPreferences.AcceptedMarketing, time.Time(marketingPreferences.UpdatedMarketingAt), marketingPreferences.AcceptedNewsletter, time.Time(marketingPreferences.UpdatedNewsletterAt))
 
 	if txErr != nil {
 		return txErr
@@ -80,7 +98,7 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 		deletedAt           sql.NullTime
 	)
 
-	txErr := r.db.QueryRow("SELECT created_at, username, username_fingerprint, email, email_verified, email_verified_at, blocked, deleted, deleted_at FROM users WHERE id = $1", id).Scan(&createdAt, &username, &usernameFingerprint, &email, &emailVerified, &emailVerifiedAt, &blocked, &deleted, &deletedAt)
+	txErr := r.db.QueryRow("SELECT created_at, username, username_fingerprint, email, email_verified, email_verified_at, blocked, deleted, deleted_at FROM user_account WHERE id = $1", id).Scan(&createdAt, &username, &usernameFingerprint, &email, &emailVerified, &emailVerifiedAt, &blocked, &deleted, &deletedAt)
 
 	if txErr != nil {
 		fmt.Println(txErr)
@@ -124,7 +142,7 @@ func (r *UsersRepository) GetUserByEmail(email types.Email) (model.UserModel, er
 		deletedAt           sql.NullTime
 	)
 
-	txErr := r.db.QueryRow("SELECT id, created_at, username, username_fingerprint, email_verified, email_verified_at, blocked, deleted, deleted_at FROM users WHERE email = $1", string(email)).Scan(&id, &createdAt, &username, &usernameFingerprint, &emailVerified, &emailVerifiedAt, &blocked, &deleted, &deletedAt)
+	txErr := r.db.QueryRow("SELECT id, created_at, username, username_fingerprint, email_verified, email_verified_at, blocked, deleted, deleted_at FROM user_account WHERE email = $1", string(email)).Scan(&id, &createdAt, &username, &usernameFingerprint, &emailVerified, &emailVerifiedAt, &blocked, &deleted, &deletedAt)
 
 	if txErr != nil {
 		fmt.Println(txErr)
@@ -154,7 +172,7 @@ func (r *UsersRepository) GetUserByEmail(email types.Email) (model.UserModel, er
 }
 
 func (r *UsersRepository) ValidateEmail(userId types.Id) error {
-	_, txErr := r.db.Exec("UPDATE users SET email_verified = true, email_verified_at = $1 WHERE id = $2", time.Now().UTC(), userId)
+	_, txErr := r.db.Exec("UPDATE user_account SET email_verified = true, email_verified_at = $1 WHERE id = $2", time.Now().UTC(), userId)
 
 	if txErr != nil {
 		// todo: handle error better
