@@ -14,8 +14,8 @@ type UsersService struct {
 	emailRepository secondaryports.EmailRepository
 }
 
-// NewUserService initializes a new instance of UsersService with the provided repositories
-func NewUserService(usersRepository secondaryports.UsersRepository, emailRepository secondaryports.EmailRepository) *UsersService {
+// NewUsersService initializes a new instance of UsersService with the provided repositories
+func NewUsersService(usersRepository secondaryports.UsersRepository, emailRepository secondaryports.EmailRepository) *UsersService {
 	return &UsersService{
 		usersRepository: usersRepository,
 		emailRepository: emailRepository,
