@@ -112,7 +112,10 @@ func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArg
 		return primaryports.GetAccessTokenAnswer{}, errors.New(apperrors.UserDeleted)
 	}
 
-	accessToken, err := types.NewAccessToken(user.Id, "user")
+	accessToken, err := types.NewAccessToken(types.CustomClaims{
+		UserId: string(user.Id),
+		Roles:  "user",
+	})
 
 	if err != nil {
 		return primaryports.GetAccessTokenAnswer{}, err

@@ -13,6 +13,7 @@ type Registry struct {
 	UsersHandler            *handlers.UsersHandler
 	VerificationCodeHandler *handlers.EmailVerificationHandler
 	AuthenticationHandler   *handlers.AuthenticationHandler
+	AuthorizationHandler    *handlers.AuthorizationHandler
 }
 
 func NewRegistry(db *sql.DB, emailProvider *emailprovider.Provider) *Registry {
@@ -29,16 +30,19 @@ func NewRegistry(db *sql.DB, emailProvider *emailprovider.Provider) *Registry {
 	var usersService = services.NewUsersService(usersRepository, emailRepository)
 	var verificationCodeService = services.NewEmailVerificationService(usersRepository, verificationCodeRepository, authorizationCodeRepository, emailRepository)
 	var authenticationService = services.NewAuthenticationService(usersRepository, authorizationCodeRepository, emailRepository, refreshTokenRepository)
+	var authorizationService = services.NewAuthorizationService()
 
 	// Handlers
 	var usersHandler = handlers.NewUsersHandler(usersService)
 	var verificationCodeHandler = handlers.NewEmailVerificationHandler(verificationCodeService)
 	var authenticationHandler = handlers.NewAuthenticationHandler(authenticationService)
+	var authorizationHandler = handlers.NewAuthorizationHandler(authorizationService)
 
 	// Registry
 	return &Registry{
 		UsersHandler:            usersHandler,
 		VerificationCodeHandler: verificationCodeHandler,
 		AuthenticationHandler:   authenticationHandler,
+		AuthorizationHandler:    authorizationHandler,
 	}
 }

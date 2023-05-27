@@ -50,3 +50,13 @@ type GetAccessTokenAnswer struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
 }
+
+// Interfaces for service: authorization
+
+type IsAccessTokenValidArgs struct {
+	AuthorisationHeader string
+}
+
+type IsAccessTokenValidAnswer struct {
+	Valid bool `json:"valid"`
+}

@@ -13,3 +13,7 @@ type AuthenticationService interface {
 	SendMagicLink(args SendMagicLinkArgs) (SendMagicLinkAnswer, error)
 	Authenticate(args GetAccessTokenArgs) (GetAccessTokenAnswer, error)
 }
+
+type AuthorizationService interface {
+	IsAccessTokenValid(args IsAccessTokenValidArgs) (IsAccessTokenValidAnswer, error)
+}

@@ -43,36 +43,41 @@ func Start() error {
 
 	router.Get("/api/internal/v1/auth/whoami", nil)
 
-	// /!\ Can issue a userId
+	// /!\ This endpoint can issue a userId
+	// It might become an endpoint for magic links only
 	router.Post("/api/internal/v1/auth/register", r.UsersHandler.Register)
 
 	// Email verification endpoints
 
-	// /!\ Can issue a verification code
+	// /!\ This endpoint can issue a verification code
 	router.Post("/api/internal/v1/auth/email-verification/send", r.VerificationCodeHandler.SendVerificationEmail)
 
-	// /!\ Can issue an authorization code
+	// /!\ This endpoint can issue an authorization code
 	router.Patch("/api/internal/v1/auth/email-verification/confirm", r.VerificationCodeHandler.ConfirmEmail)
 
 	// Authentication endpoints
 
-	// /!\ Can issue an authorization code
-	// /!\ Can issue a userId if email is not verified
+	// /!\ This endpoint can issue an authorization code
+	// /!\ This endpoint can issue a userId if email is not verified
 	router.Post("/api/internal/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
 
-	// /!\ Can issue an access and a refresh token
+	// /!\ This endpoint can issue an access and a refresh token
+	// /!\ This is the only endpoint that can issue those tokens, in exchange for an authorization code
 	router.Post("/api/internal/v1/auth/token", r.AuthenticationHandler.Authenticate)
 
-	router.Post("/api/internal/v1/auth/token/authorize", nil)
+	router.With(r.AuthorizationHandler.CheckAccessTokenMiddleware).Post(
+		"/api/internal/v1/auth/token/authorize", func(w http.ResponseWriter, r *http.Request) {
+			httphelpers.WriteSuccess(http.StatusAccepted, "Authorized successfully", struct{}{})(w, r)
+		})
 
-	// /!\ Can issue an authorization code
+	// /!\ This endpoint can issue an authorization code
 	router.Post("/api/internal/v1/auth/token/refresh", nil)
 
 	router.Post("/api/internal/v1/auth/token/revoke", nil)
 
 	// Other endpoints
 
-	router.Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
+	router.With(r.AuthorizationHandler.CheckAccessTokenMiddleware).Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("headers", r.Header.Get("X-Request-Id"))
 		w.Write([]byte("{\"status\":\"success\"}"))
 	})
