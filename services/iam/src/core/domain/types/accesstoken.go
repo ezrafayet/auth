@@ -16,15 +16,15 @@ type CustomClaims struct {
 	ServerRegion string `json:"server_region"`
 }
 
-func NewAccessToken(customClaims CustomClaims) (AccessToken, error) {
+func NewAccessToken(customClaims CustomClaims, issuedAt time.Time) (AccessToken, int64, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
-	ts := time.Now().UTC()
+	expiresAt := issuedAt.Add(time.Minute * 15).Unix()
 
 	standardClaims := jwt.StandardClaims{
 		Audience:  "iam",
-		ExpiresAt: ts.Add(time.Minute * 15).Unix(),
-		IssuedAt:  ts.Unix(),
+		ExpiresAt: expiresAt,
+		IssuedAt:  issuedAt.Unix(),
 		Issuer:    "iam",
 	}
 
@@ -47,10 +47,10 @@ func NewAccessToken(customClaims CustomClaims) (AccessToken, error) {
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_PRIVATE_KEY")))
 
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 
-	return AccessToken(tokenString), nil
+	return AccessToken(tokenString), expiresAt, nil
 }
 
 func ParseAndValidateAccessToken(tokenString string) (bool, CustomClaims, error) {

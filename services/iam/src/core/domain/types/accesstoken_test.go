@@ -1,9 +1,9 @@
 package types
 
 import (
-	"fmt"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestAccessToken_Generate(t *testing.T) {
@@ -15,7 +15,7 @@ func TestAccessToken_Generate(t *testing.T) {
 		ServerRegion: "us-east-1",
 	}
 
-	stringToken, err := NewAccessToken(customClaims)
+	stringToken, _, err := NewAccessToken(customClaims, time.Now())
 
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
@@ -35,9 +35,7 @@ func TestAccessToken_ParseAndValidate_ValidToken(t *testing.T) {
 		ServerRegion: "us-east-1",
 	}
 
-	stringToken, _ := NewAccessToken(customClaims)
-
-	fmt.Println(stringToken)
+	stringToken, _, _ := NewAccessToken(customClaims, time.Now())
 
 	isValid, claims, err := ParseAndValidateAccessToken(string(stringToken))
 
@@ -59,5 +57,41 @@ func TestAccessToken_ParseAndValidate_ValidToken(t *testing.T) {
 
 	if claims.ServerRegion != customClaims.ServerRegion {
 		t.Errorf("Expected %v, got %v", customClaims.ServerRegion, claims.ServerRegion)
+	}
+}
+
+func TestAccessToken_ParseAndValidate_ExpiredToken(t *testing.T) {
+	os.Setenv("JWT_PRIVATE_KEY", "s3cr3t")
+
+	customClaims := CustomClaims{
+		UserId:       "user_id",
+		Roles:        "user",
+		ServerRegion: "us-east-1",
+	}
+
+	stringToken, _, _ := NewAccessToken(customClaims, time.Now().Add(time.Minute*-16))
+
+	isValid, _, err := ParseAndValidateAccessToken(string(stringToken))
+
+	if err == nil {
+		t.Errorf("Expected error, got no nil")
+	}
+
+	if isValid {
+		t.Errorf("Expected true, got false")
+	}
+}
+
+func TestAccessToken_ParseAndValidate_InvalidToken(t *testing.T) {
+	os.Setenv("JWT_PRIVATE_KEY", "s3cr3t")
+
+	isValid, _, err := ParseAndValidateAccessToken("invalid_token")
+
+	if err == nil {
+		t.Errorf("Expected error, got no nil")
+	}
+
+	if isValid {
+		t.Errorf("Expected true, got false")
 	}
 }

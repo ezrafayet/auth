@@ -7,6 +7,7 @@ import (
 	"iam/src/core/domain/types"
 	"iam/src/core/ports/primaryports"
 	"iam/src/core/ports/secondaryports"
+	"time"
 )
 
 type AuthenticationService struct {
@@ -112,10 +113,10 @@ func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArg
 		return primaryports.GetAccessTokenAnswer{}, errors.New(apperrors.UserDeleted)
 	}
 
-	accessToken, err := types.NewAccessToken(types.CustomClaims{
+	accessToken, expiresAt, err := types.NewAccessToken(types.CustomClaims{
 		UserId: string(user.Id),
 		Roles:  "user",
-	})
+	}, time.Now().UTC())
 
 	if err != nil {
 		return primaryports.GetAccessTokenAnswer{}, err
@@ -142,5 +143,6 @@ func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArg
 	return primaryports.GetAccessTokenAnswer{
 		AccessToken:  string(accessToken),
 		RefreshToken: string(refreshToken.Token),
+		ExpiresAt:    expiresAt,
 	}, nil
 }

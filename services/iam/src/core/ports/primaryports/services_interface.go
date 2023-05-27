@@ -49,6 +49,7 @@ type GetAccessTokenArgs struct {
 type GetAccessTokenAnswer struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
+	ExpiresAt    int64  `json:"expiresAt"`
 }
 
 // Interfaces for service: authorization
