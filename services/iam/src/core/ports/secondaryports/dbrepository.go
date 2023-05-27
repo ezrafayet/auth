@@ -32,4 +32,5 @@ type AuthorizationCodeRepository interface {
 
 type RefreshTokenRepository interface {
 	SaveToken(refreshToken model.RefreshTokenModel) error
+	GetAndDeleteByToken(token types.Code) (model.RefreshTokenModel, error)
 }

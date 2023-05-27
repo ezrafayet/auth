@@ -14,14 +14,15 @@ var (
 
 // Invalid data received from the client
 var (
-	InvalidId          = "INVALID_ID"
-	InvalidAuthType    = "INVALID_AUTH_TYPE"
-	InvalidRole        = "INVALID_ROLE"
-	InvalidEmail       = "INVALID_EMAIL"
-	InvalidUsername    = "INVALID_USERNAME"
-	InvalidCode        = "INVALID_CODE"
-	RefusedTerms       = "REFUSED_TERMS"
-	InvalidAccessToken = "INVALID_ACCESS_TOKEN"
+	InvalidId           = "INVALID_ID"
+	InvalidAuthType     = "INVALID_AUTH_TYPE"
+	InvalidRole         = "INVALID_ROLE"
+	InvalidEmail        = "INVALID_EMAIL"
+	InvalidUsername     = "INVALID_USERNAME"
+	InvalidCode         = "INVALID_CODE"
+	RefusedTerms        = "REFUSED_TERMS"
+	InvalidAccessToken  = "INVALID_ACCESS_TOKEN"
+	InvalidRefreshToken = "INVALID_REFRESH_TOKEN"
 )
 
 // Database errors

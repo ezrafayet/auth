@@ -2,6 +2,7 @@ package model
 
 import (
 	"iam/src/core/domain/types"
+	"time"
 )
 
 type RefreshTokenModel struct {
@@ -28,4 +29,29 @@ func NewRefreshTokenModel(userId types.Id) (RefreshTokenModel, error) {
 		ExpiresAt: timestamp.AddMonths(3),
 		Token:     token,
 	}, nil
+}
+
+func (r *RefreshTokenModel) Hydrate(
+	userId string,
+	createdAt time.Time,
+	expiresAt time.Time,
+	token string,
+	revoked bool,
+	revokedAt time.Time) error {
+	r.UserId = types.Id(userId)
+	r.CreatedAt = types.Timestamp(createdAt)
+	r.ExpiresAt = types.Timestamp(expiresAt)
+	r.Token = types.Code(token)
+	r.Revoked = revoked
+	r.RevokedAt = types.Timestamp(revokedAt)
+	return nil
+}
+
+func (r *RefreshTokenModel) IsExpired() bool {
+	return r.ExpiresAt.IsBefore(types.NewTimestamp())
+}
+
+func (r *RefreshTokenModel) Revoke() {
+	r.Revoked = true
+	r.RevokedAt = types.NewTimestamp()
 }

@@ -3,6 +3,7 @@ package dbrepository
 import (
 	"database/sql"
 	"iam/src/core/domain/model"
+	"iam/src/core/domain/types"
 	"time"
 )
 
@@ -22,4 +23,42 @@ func (r *RefreshTokenRepository) SaveToken(refreshToken model.RefreshTokenModel)
 	}
 
 	return nil
+}
+
+func (r *RefreshTokenRepository) GetAndDeleteByToken(token types.Code) (model.RefreshTokenModel, error) {
+	var refreshToken model.RefreshTokenModel
+
+	var (
+		userId    string
+		createdAt time.Time
+		expiresAt time.Time
+		revoked   bool
+		revokedAt sql.NullTime
+	)
+
+	err := r.db.QueryRow("SELECT user_id, created_at, expires_at, revoked, revoked_at FROM refresh_token WHERE token = $1", token).Scan(&userId, &createdAt, &expiresAt, &revoked, &revokedAt)
+
+	if err != nil {
+		return model.RefreshTokenModel{}, err
+	}
+
+	var parsedRevokedAt time.Time
+
+	if revokedAt.Valid {
+		parsedRevokedAt = revokedAt.Time
+	}
+
+	err = refreshToken.Hydrate(userId, createdAt, expiresAt, string(token), revoked, parsedRevokedAt)
+
+	if err != nil {
+		return model.RefreshTokenModel{}, err
+	}
+
+	_, err = r.db.Exec("DELETE FROM refresh_token WHERE token = $1", token)
+
+	if err != nil {
+		return model.RefreshTokenModel{}, err
+	}
+
+	return refreshToken, nil
 }
