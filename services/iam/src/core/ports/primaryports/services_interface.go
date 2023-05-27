@@ -38,9 +38,7 @@ type SendMagicLinkArgs struct {
 	Email string `json:"email"`
 }
 
-type SendMagicLinkAnswer struct {
-	AuthorizationCode string `json:"authorizationCode"`
-}
+type SendMagicLinkAnswer struct{}
 
 type GetAccessTokenArgs struct {
 	AuthorizationCode string `json:"authorizationCode"`
@@ -60,4 +58,12 @@ type IsAccessTokenValidArgs struct {
 
 type IsAccessTokenValidAnswer struct {
 	Valid bool `json:"valid"`
+}
+
+type RefreshAccessTokenArgs struct {
+	RefreshToken string `json:"refreshToken"`
+}
+
+type RefreshAccessTokenAnswer struct {
+	AuthorizationCode string `json:"authorizationCode"`
 }

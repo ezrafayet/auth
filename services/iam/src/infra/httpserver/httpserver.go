@@ -71,9 +71,7 @@ func Start() error {
 		})
 
 	// /!\ This endpoint can issue an authorization code
-	router.Post("/api/internal/v1/auth/token/refresh", nil)
-
-	router.Post("/api/internal/v1/auth/token/revoke", nil)
+	router.Post("/api/internal/v1/auth/token/refresh", r.AuthorizationHandler.Refresh)
 
 	// Other endpoints
 

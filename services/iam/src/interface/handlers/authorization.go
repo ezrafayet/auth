@@ -43,3 +43,7 @@ func (h *AuthorizationHandler) CheckAccessTokenMiddleware(nextHandler http.Handl
 		httphelpers.WriteError(http.StatusForbidden, "error", apperrors.InvalidAccessToken)(w, r)
 	})
 }
+
+func (h *AuthorizationHandler) Refresh(w http.ResponseWriter, r *http.Request) {
+
+}
