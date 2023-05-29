@@ -1,27 +1,6 @@
 -- access.lua
--- todo: must be unit-tested
 
 local _M = {}
-
-function extract_user_id_from_jwt(jwt)
-    local segments = {}
-    for segment in string.gmatch(jwt, "[^%.]+") do
-        table.insert(segments, segment)
-    end
-
-    if #segments ~= 3 then
-        return nil, "invalid JWT format"
-    end
-
-    local payload_b64 = segments[2]
-    local payload_json, err = ngx.decode_base64(payload_b64)
-    if not payload_json then
-        return nil, "error decoding JWT payload: " .. err
-    end
-
-    local payload = cjson.decode(payload_json)
-    return payload.userId
-end
 
 function set_headers_forwarded_for()
     ngx.req.set_header("X-Forwarded-For", ngx.var.remote_addr)
@@ -44,29 +23,7 @@ function set_headers_xss_protection()
 end
 
 function set_headers_request_id ()
-    ngx.req.set_header("X-Request-Id", "rid-" .. ngx.var.request_id)
-end
-
-function set_headers_initiator ()
-    local authorization_header = ngx.req.get_headers()["Authorization"]
-    local cli_request = ngx.req.get_headers()["X_Is-Cli"]
-    local user_agent = ngx.req.get_headers()["User-Agent"]
-    local is_web_user_agent = user_agent and string.find(user_agent, "Mozilla") ~= nil
-
-    if not authorization_header then
-        ngx.req.set_header("X-Initiator-Id", "")
-        ngx.req.set_header("X-Initiator-Type", is_web_user_agent and "web" or cli_request == "true" and "cli" or "api")
-        return
-    end
-
-    if is_web_user_agent then
-        local user_id, _ = extract_user_id_from_jwt(authorization_header)
-        ngx.req.set_header("X-Initiator-Id", user_id)
-        ngx.req.set_header("X-Initiator-Type", "web")
-    else
-        ngx.req.set_header("X-Initiator-Id", authorization_header)
-        ngx.req.set_header("X-Initiator-Type", cli_request == "true" and "cli" or "api")
-    end
+    ngx.req.set_header("X-Request-Id", ngx.var.request_id)
 end
 
 -- sets headers that must be passed to the upstream services
@@ -77,11 +34,26 @@ function _M.set_headers()
     set_headers_frame_options()
     set_headers_xss_protection()
     set_headers_request_id()
-    set_headers_initiator() -- might be useless, to be determined
 end
 
+-- todo: must be testable and tested
 function _M.control_access_token()
-    -- todo
+    local res = ngx.location.capture("/api/internal/v1/auth/token/authorize", { method = ngx.HTTP_POST })
+
+    if not res then
+        ngx.say("{\"status\": \"error\", \"message\": \"Internal server error\"}")
+        ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
+        return
+    end
+
+    if res.status < 200 or res.status >= 400 then
+        ngx.status = res.status
+        ngx.say(res.body)
+        ngx.exit(res.status)
+        return
+    end
+
+    return ngx.OK
 end
 
 return _M
