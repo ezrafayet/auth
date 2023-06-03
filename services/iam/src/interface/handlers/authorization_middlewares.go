@@ -71,7 +71,7 @@ func (h *AuthorizationHandler) VerifyFeatureFlags(flags []string) func(nextHandl
 				return
 			}
 
-			httphelpers.WriteError(http.StatusServiceUnavailable, "error", apperrors.FeatureNotEnabled)(w, r)
+			httphelpers.WriteError(http.StatusServiceUnavailable, "error", apperrors.FeatureDisabled)(w, r)
 		})
 	}
 }

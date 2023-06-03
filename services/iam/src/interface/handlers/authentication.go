@@ -50,7 +50,7 @@ func (h *AuthenticationHandler) SendMagicLink(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	httphelpers.WriteSuccess(http.StatusAccepted, "Authentication successful", answer)(w, r)
+	httphelpers.WriteSuccess(http.StatusAccepted, "Magic link sent successfully", answer)(w, r)
 }
 
 func (h *AuthenticationHandler) Authenticate(w http.ResponseWriter, r *http.Request) {
