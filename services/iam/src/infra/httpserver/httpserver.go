@@ -43,9 +43,9 @@ func Start() error {
 
 	router.Get("/api/internal/v1/auth/whoami", nil)
 
-	// /!\ This endpoint can issue a userId
-	// It might become an endpoint for magic links only
-	router.Post("/api/internal/v1/auth/register", r.UsersHandler.Register)
+	router.
+		With(r.AuthorizationHandler.VerifyFeatureFlags([]string{"ENABLE_AUTH_WITH_MAGIC_LINK"})).
+		Post("/api/internal/v1/auth/register/magic-link", r.UsersHandler.Register)
 
 	// Email verification endpoints
 

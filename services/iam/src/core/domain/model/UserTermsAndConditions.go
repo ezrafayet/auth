@@ -21,7 +21,7 @@ func NewUserTermsAndConditionsModel(userId types.Id) UserTermsAndConditionsModel
 	}
 }
 
-func (v *UserTermsAndConditionsModel) Accept(acceptedTerms bool, termsVersion, UserData string) error {
+func (v *UserTermsAndConditionsModel) Accept(acceptedTerms bool, termsVersion string) error {
 	if !acceptedTerms {
 		return errors.New(apperrors.RefusedTerms)
 	}
@@ -29,7 +29,6 @@ func (v *UserTermsAndConditionsModel) Accept(acceptedTerms bool, termsVersion, U
 	v.Accepted = true
 	v.AcceptedAt = types.NewTimestamp()
 	v.TermsVersion = termsVersion
-	v.UserData = UserData // todo: move to creation phase
 
 	return nil
 }

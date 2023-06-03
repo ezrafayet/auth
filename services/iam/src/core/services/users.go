@@ -32,10 +32,6 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 
 	email, err := types.ParseAndValidateEmail(args.Email)
 
-	if !args.HasAcceptedTerms || args.AcceptedTermsVersion == "" {
-		return primaryports.RegisterAnswer{}, errors.New(apperrors.RefusedTerms)
-	}
-
 	if err != nil {
 		switch err.Error() {
 		case apperrors.InvalidEmail:
@@ -51,14 +47,17 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 		return primaryports.RegisterAnswer{}, err
 	}
 
+	if !args.HasAcceptedTerms || args.AcceptedTermsVersion == "" {
+		return primaryports.RegisterAnswer{}, errors.New(apperrors.RefusedTerms)
+	}
+
 	user := model.NewUserModel(username, email, types.NewTimestamp())
 
 	userAuthMethod := model.NewUserAuthTypeModel(user.Id, authType)
 
 	termsAndConditions := model.NewUserTermsAndConditionsModel(user.Id)
 
-	// todo: hydrate proper user data - IP, browser data etc.
-	err = termsAndConditions.Accept(args.HasAcceptedTerms, args.AcceptedTermsVersion, "")
+	err = termsAndConditions.Accept(args.HasAcceptedTerms, args.AcceptedTermsVersion)
 
 	if err != nil {
 		return primaryports.RegisterAnswer{}, err

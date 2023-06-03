@@ -8,7 +8,7 @@ export default () => {
     const [newsletter, setNewsletter] = useState(false);
 
     async function signup () {
-        const answer = await fetch("/api/internal/v1/auth/register", {
+        const answer = await fetch("/api/internal/v1/auth/register/magic-link", {
             method: "POST",
             body: JSON.stringify({
                 "authType": "magic-link",
