@@ -59,15 +59,18 @@ func Start() error {
 
 	// /!\ This endpoint can issue an authorization code
 	// /!\ This endpoint can issue a userId if email is not verified
-	router.Post("/api/internal/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
+	router.
+		With(r.AuthorizationHandler.VerifyFeatureFlags([]string{"ENABLE_AUTH_WITH_MAGIC_LINK"})).
+		Post("/api/internal/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
 
 	// /!\ This endpoint can issue an access and a refresh token
 	// /!\ This is the only endpoint that can issue those tokens, in exchange for an authorization code
 	router.Post("/api/internal/v1/auth/token", r.AuthenticationHandler.Authenticate)
 
-	router.With(r.AuthorizationHandler.CheckAccessTokenMiddleware).Post(
-		"/api/internal/v1/auth/token/authorize", func(w http.ResponseWriter, r *http.Request) {
-			httphelpers.WriteSuccess(http.StatusAccepted, "Authorized successfully", struct{}{})(w, r)
+	router.
+		With(r.AuthorizationHandler.VerifyAccessToken).
+		Post("/api/internal/v1/auth/token/authorize", func(w http.ResponseWriter, r *http.Request) {
+			httphelpers.WriteSuccess(http.StatusAccepted, "Access token valid", struct{}{})(w, r)
 		})
 
 	// /!\ This endpoint can issue an authorization code
@@ -75,10 +78,12 @@ func Start() error {
 
 	// Other endpoints
 
-	router.With(r.AuthorizationHandler.CheckAccessTokenMiddleware).Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("headers", r.Header.Get("X-Request-Id"))
-		w.Write([]byte("{\"status\":\"success\"}"))
-	})
+	router.
+		With(r.AuthorizationHandler.VerifyAccessToken).
+		Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Println("headers", r.Header.Get("X-Request-Id"))
+			httphelpers.WriteSuccess(http.StatusOK, "Foobar", struct{}{})(w, r)
+		})
 
 	router.HandleFunc("/*", httphelpers.WriteError(http.StatusNotFound, "error", "NOT_FOUND"))
 

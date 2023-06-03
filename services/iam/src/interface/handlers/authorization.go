@@ -19,32 +19,6 @@ func NewAuthorizationHandler(authorizationService primaryports.AuthorizationServ
 	}
 }
 
-func (h *AuthorizationHandler) CheckAccessTokenMiddleware(nextHandler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		answer, err := h.authorizationService.IsAccessTokenValid(primaryports.IsAccessTokenValidArgs{
-			AuthorisationHeader: r.Header.Get("Authorization"),
-		})
-
-		if err != nil {
-			switch err.Error() {
-			case "Token is expired":
-				httphelpers.WriteError(http.StatusForbidden, "error", apperrors.InvalidAccessToken)(w, r)
-			default:
-				fmt.Println(err)
-				httphelpers.WriteError(http.StatusInternalServerError, "error", apperrors.ServerError)(w, r)
-			}
-			return
-		}
-
-		if answer.Valid {
-			nextHandler.ServeHTTP(w, r)
-			return
-		}
-
-		httphelpers.WriteError(http.StatusForbidden, "error", apperrors.InvalidAccessToken)(w, r)
-	})
-}
-
 func (h *AuthorizationHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 	var args primaryports.RefreshAccessTokenArgs
 

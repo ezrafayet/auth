@@ -23,6 +23,7 @@ var (
 	RefusedTerms        = "REFUSED_TERMS"
 	InvalidAccessToken  = "INVALID_ACCESS_TOKEN"
 	InvalidRefreshToken = "INVALID_REFRESH_TOKEN"
+	FeatureNotEnabled   = "FEATURE_NOT_ENABLED"
 )
 
 // Database errors
