@@ -67,3 +67,11 @@ type RefreshAccessTokenArgs struct {
 type RefreshAccessTokenAnswer struct {
 	AuthorizationCode string `json:"authorizationCode"`
 }
+
+type AreFeaturesEnabledArgs struct {
+	FlagsNeeded []string
+}
+
+type AreFeaturesEnabledAnswer struct {
+	Active bool `json:"active"`
+}

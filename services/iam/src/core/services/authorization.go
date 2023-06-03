@@ -7,6 +7,7 @@ import (
 	"iam/src/core/domain/types"
 	"iam/src/core/ports/primaryports"
 	"iam/src/core/ports/secondaryports"
+	"os"
 )
 
 type AuthorizationService struct {
@@ -100,4 +101,15 @@ func (a *AuthorizationService) RefreshAccessToken(args primaryports.RefreshAcces
 	return primaryports.RefreshAccessTokenAnswer{
 		AuthorizationCode: string(authorizationCode.Code),
 	}, nil
+}
+
+func (a *AuthorizationService) AreFeaturesEnabled(args primaryports.AreFeaturesEnabledArgs) (primaryports.AreFeaturesEnabledAnswer, error) {
+
+	for _, f := range args.FlagsNeeded {
+		if os.Getenv(f) != "true" {
+			return primaryports.AreFeaturesEnabledAnswer{Active: false}, nil
+		}
+	}
+
+	return primaryports.AreFeaturesEnabledAnswer{Active: true}, nil
 }

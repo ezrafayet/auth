@@ -15,6 +15,7 @@ type AuthenticationService interface {
 }
 
 type AuthorizationService interface {
-	IsAccessTokenValid(args IsAccessTokenValidArgs) (IsAccessTokenValidAnswer, error)
 	RefreshAccessToken(args RefreshAccessTokenArgs) (RefreshAccessTokenAnswer, error)
+	IsAccessTokenValid(args IsAccessTokenValidArgs) (IsAccessTokenValidAnswer, error)
+	AreFeaturesEnabled(args AreFeaturesEnabledArgs) (AreFeaturesEnabledAnswer, error)
 }
