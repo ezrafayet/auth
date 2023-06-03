@@ -1,17 +1,16 @@
-[WORK IN PROGRESS]
 
-*Note: this project is in its early stages and is a work in progress. The primary objective is to create a prototype that adheres to industry standards and best practices for implementing an authentication and authorization service. To achieve this goal, the project will heavily rely on dependency injection and an orthogonal architecture.*
+*Note: this project is in its early stages. This is an implementation of an authentication and authorization service that adheres to industry standards and best practices.*
 
 # Introduction
 
-"Therefore IAM" provides an authentication and authorisation solution for other services within a distributed system. It is meant to be generic and can be seamlessly integrated across multiple projects.
+"Therefore IAM" provides an authentication and authorization solution for other services within a distributed system. It is meant to be generic and can be seamlessly integrated across multiple projects.
 
 # Quick start
 
-1. Copy iam/.env.example to iam/.env and fill in the required values.
+1. Within the folder services/iam, copy .env.example to .env and fill in the required values.
 
 
-2. Run:
+2. Run with docker:
 ```
 docker-compose build
 docker-compose up
@@ -21,11 +20,11 @@ Then navigate to: http://localhost:5050
 
 # High level architecture
 
-The project contains mainly two services:
+The project is composed of two main services:
 - The API gateway
 - The IAM service
 
-Additionally, the project includes two dummy services to facilitate its operation:
+Additionally, it includes two dummy services to facilitate tests and operations:
 - The Client service
 - The Core service
 
@@ -45,10 +44,6 @@ The following draft diagram illustrates the overall architecture of the project:
                                                  +---------+
                                                     :8000
 ```
-
-# Database schemas
-
-[Access databases](documentation/architecture/databases.md)
 
 # Authentication
 
