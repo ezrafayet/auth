@@ -23,7 +23,7 @@ func NewUsersService(usersRepository secondaryports.UsersRepository, emailReposi
 }
 
 // Register registers a new user
-// /!\ It currently handles magic link registration only
+// /!\ It currently handles magic link registration only, but it can be extended
 func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.RegisterAnswer, error) {
 	authType, err := types.ParseAndValidateAuthType(args.AuthType)
 
@@ -69,6 +69,8 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 		marketingPreferences.AcceptMarketing()
 	}
 
+	// quite a few things are happening here, we should consider breaking it down to multiple operations while
+	// keeping the benefits of the transaction - not urgent
 	err = s.usersRepository.SaveUser(user, userAuthMethod, types.RoleUser, termsAndConditions, marketingPreferences)
 
 	if err != nil {
