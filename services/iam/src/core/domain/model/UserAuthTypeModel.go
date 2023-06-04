@@ -8,7 +8,7 @@ type UserAuthTypeModel struct {
 	CreatedAt  types.Timestamp
 }
 
-func NewUserAuthTypeModel(
+func NewUserMagicLinkAuth(
 	userId types.Id, authMethodId types.AuthType) UserAuthTypeModel {
 	return UserAuthTypeModel{
 		UserId:     userId,

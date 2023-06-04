@@ -23,6 +23,7 @@ func NewUsersService(usersRepository secondaryports.UsersRepository, emailReposi
 }
 
 // Register registers a new user
+// /!\ It currently handles magic link registration only
 func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.RegisterAnswer, error) {
 	authType, err := types.ParseAndValidateAuthType(args.AuthType)
 
@@ -53,7 +54,7 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 
 	user := model.NewUserModel(username, email, types.NewTimestamp())
 
-	userAuthMethod := model.NewUserAuthTypeModel(user.Id, authType)
+	userAuthMethod := model.NewUserMagicLinkAuth(user.Id, authType)
 
 	termsAndConditions := model.NewUserTermsAndConditionsModel(user.Id)
 
@@ -80,6 +81,7 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 	}
 
 	go func() {
+		// this email could later be handled by a worker
 		_ = s.emailRepository.WelcomeNewUser(user.Email, user.Username)
 	}()
 
