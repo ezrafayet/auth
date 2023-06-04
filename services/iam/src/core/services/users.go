@@ -34,12 +34,7 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 	email, err := types.ParseAndValidateEmail(args.Email)
 
 	if err != nil {
-		switch err.Error() {
-		case apperrors.InvalidEmail:
-			return primaryports.RegisterAnswer{}, err
-		default:
-			return primaryports.RegisterAnswer{}, errors.New(apperrors.InvalidEmail)
-		}
+		return primaryports.RegisterAnswer{}, err
 	}
 
 	username, err := types.ParseAndValidateUsername(args.Username)
