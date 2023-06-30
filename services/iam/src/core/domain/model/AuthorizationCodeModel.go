@@ -31,11 +31,17 @@ func NewAuthorizationCodeModel(userId types.Id) (AuthorizationCodeModel, error) 
 	}, nil
 }
 
-func (v *AuthorizationCodeModel) Hydrate(userId string, code string, createdAt time.Time, expiresAt time.Time) {
-	v.UserId = types.Id(userId)
-	v.Code = types.Code(code)
-	v.CreatedAt = types.Timestamp(createdAt)
-	v.ExpiresAt = types.Timestamp(expiresAt)
+func HydrateAuthorizationCodeModel(
+	userId string,
+	code string,
+	createdAt time.Time,
+	expiresAt time.Time) AuthorizationCodeModel {
+	return AuthorizationCodeModel{
+		UserId:    types.Id(userId),
+		Code:      types.Code(code),
+		CreatedAt: types.Timestamp(createdAt),
+		ExpiresAt: types.Timestamp(expiresAt),
+	}
 }
 
 func (v *AuthorizationCodeModel) IsExpired() bool {

@@ -42,7 +42,6 @@ func (a *AuthorizationCodeRepository) CountCodes(userId types.Id) (int, error) {
 }
 
 func (a *AuthorizationCodeRepository) GetCode(code types.Code) (model.AuthorizationCodeModel, error) {
-	var authorizationCode model.AuthorizationCodeModel
 	var userId string
 	var createdAt time.Time
 	var expiresAt time.Time
@@ -57,7 +56,7 @@ func (a *AuthorizationCodeRepository) GetCode(code types.Code) (model.Authorizat
 		return model.AuthorizationCodeModel{}, errors.New(apperrors.AuthorizationCodeNotFound)
 	}
 
-	authorizationCode.Hydrate(userId, string(code), createdAt, expiresAt)
+	authorizationCode := model.HydrateAuthorizationCodeModel(userId, string(code), createdAt, expiresAt)
 
 	return authorizationCode, nil
 }
