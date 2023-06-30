@@ -13,6 +13,7 @@ type AuthorizationCodeModel struct {
 	ExpiresAt types.Timestamp
 }
 
+// NewAuthorizationCode creates a new authorization code
 func NewAuthorizationCode(userId types.Id) (AuthorizationCodeModel, error) {
 	timestamp := types.NewTimestamp()
 
@@ -31,7 +32,8 @@ func NewAuthorizationCode(userId types.Id) (AuthorizationCodeModel, error) {
 	}, nil
 }
 
-func HydrateAuthorizationCode(
+// PopulateAuthorizationCode creates a new authorization code and hydrates it with the given data
+func PopulateAuthorizationCode(
 	userId string,
 	code string,
 	createdAt time.Time,
