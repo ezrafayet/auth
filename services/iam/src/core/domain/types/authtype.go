@@ -8,11 +8,14 @@ import (
 type AuthType int8
 
 const (
-	AuthTypePassword AuthType = iota
+	AuthTypePassword AuthType = iota + 1
 	AuthTypeMagicLink
 )
 
-var authTypesNames = []string{"password", "magic-link"}
+var authTypesNames = map[AuthType]string{
+	AuthTypePassword:  "password",
+	AuthTypeMagicLink: "magic-link",
+}
 
 func (a AuthType) String() string {
 	if a < AuthTypePassword || a > AuthTypeMagicLink {
