@@ -13,7 +13,7 @@ type AuthorizationCodeModel struct {
 	ExpiresAt types.Timestamp
 }
 
-func NewAuthorizationCodeModel(userId types.Id) (AuthorizationCodeModel, error) {
+func NewAuthorizationCode(userId types.Id) (AuthorizationCodeModel, error) {
 	timestamp := types.NewTimestamp()
 
 	code, err := types.NewCode()
@@ -31,7 +31,7 @@ func NewAuthorizationCodeModel(userId types.Id) (AuthorizationCodeModel, error) 
 	}, nil
 }
 
-func HydrateAuthorizationCodeModel(
+func HydrateAuthorizationCode(
 	userId string,
 	code string,
 	createdAt time.Time,

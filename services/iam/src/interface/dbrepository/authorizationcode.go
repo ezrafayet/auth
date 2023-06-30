@@ -56,7 +56,7 @@ func (a *AuthorizationCodeRepository) GetCode(code types.Code) (model.Authorizat
 		return model.AuthorizationCodeModel{}, errors.New(apperrors.AuthorizationCodeNotFound)
 	}
 
-	authorizationCode := model.HydrateAuthorizationCodeModel(userId, string(code), createdAt, expiresAt)
+	authorizationCode := model.HydrateAuthorizationCode(userId, string(code), createdAt, expiresAt)
 
 	return authorizationCode, nil
 }

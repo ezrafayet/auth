@@ -86,7 +86,7 @@ func (a *AuthorizationService) RefreshAccessToken(args primaryports.RefreshAcces
 
 	// count existing tokens
 
-	authorizationCode, err := model.NewAuthorizationCodeModel(user.Id)
+	authorizationCode, err := model.NewAuthorizationCode(user.Id)
 
 	if err != nil {
 		return primaryports.RefreshAccessTokenAnswer{}, err

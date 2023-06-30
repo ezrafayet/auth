@@ -59,7 +59,7 @@ func (a *AuthenticationService) SendMagicLink(args primaryports.SendMagicLinkArg
 
 	// todo: count existing authorization codes and block if too many
 
-	authorizationCode, err := model.NewAuthorizationCodeModel(user.Id)
+	authorizationCode, err := model.NewAuthorizationCode(user.Id)
 
 	if err != nil {
 		return primaryports.SendMagicLinkAnswer{}, err

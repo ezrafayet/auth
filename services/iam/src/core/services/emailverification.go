@@ -122,7 +122,7 @@ func (e *EmailVerificationService) Confirm(args primaryports.ConfirmEmailArgs) (
 		return primaryports.ConfirmEmailAnswer{}, errors.New(apperrors.UserDeleted)
 	}
 
-	authorizationCode, err := model.NewAuthorizationCodeModel(verificationCode.UserId)
+	authorizationCode, err := model.NewAuthorizationCode(verificationCode.UserId)
 
 	if err != nil {
 		return primaryports.ConfirmEmailAnswer{}, err
