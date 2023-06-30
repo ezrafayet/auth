@@ -26,8 +26,6 @@ func (r *RefreshTokenRepository) SaveToken(refreshToken model.RefreshTokenModel)
 }
 
 func (r *RefreshTokenRepository) GetAndDeleteByToken(token types.Code) (model.RefreshTokenModel, error) {
-	var refreshToken model.RefreshTokenModel
-
 	var (
 		userId    string
 		createdAt time.Time
@@ -48,11 +46,7 @@ func (r *RefreshTokenRepository) GetAndDeleteByToken(token types.Code) (model.Re
 		parsedRevokedAt = revokedAt.Time
 	}
 
-	err = refreshToken.Hydrate(userId, createdAt, expiresAt, string(token), revoked, parsedRevokedAt)
-
-	if err != nil {
-		return model.RefreshTokenModel{}, err
-	}
+	refreshToken := model.PopulateRefreshToken(userId, createdAt, expiresAt, revoked, parsedRevokedAt, string(token))
 
 	_, err = r.db.Exec("DELETE FROM refresh_token WHERE token = $1", token)
 

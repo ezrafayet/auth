@@ -12,7 +12,7 @@ type AuthorizationCodeModel struct {
 	ExpiresAt types.Timestamp
 }
 
-// NewAuthorizationCode creates a new authorization code
+// NewAuthorizationCode creates a new authorization code that can be traded for an access token
 func NewAuthorizationCode(userId types.Id) (AuthorizationCodeModel, error) {
 	timestamp := types.NewTimestamp()
 

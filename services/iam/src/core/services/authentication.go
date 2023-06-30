@@ -122,7 +122,7 @@ func (a *AuthenticationService) Authenticate(args primaryports.GetAccessTokenArg
 		return primaryports.GetAccessTokenAnswer{}, err
 	}
 
-	refreshToken, err := model.NewRefreshTokenModel(user.Id)
+	refreshToken, err := model.NewRefreshToken(user.Id)
 
 	if err != nil {
 		return primaryports.GetAccessTokenAnswer{}, err

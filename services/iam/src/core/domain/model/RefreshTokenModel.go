@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// RefreshTokenModel represents a refresh token
 type RefreshTokenModel struct {
 	UserId    types.Id
 	CreatedAt types.Timestamp
@@ -14,7 +15,8 @@ type RefreshTokenModel struct {
 	Token     types.Code
 }
 
-func NewRefreshTokenModel(userId types.Id) (RefreshTokenModel, error) {
+// NewRefreshToken creates a new refresh token
+func NewRefreshToken(userId types.Id) (RefreshTokenModel, error) {
 	timestamp := types.NewTimestamp()
 
 	token, err := types.NewCode()
@@ -31,20 +33,22 @@ func NewRefreshTokenModel(userId types.Id) (RefreshTokenModel, error) {
 	}, nil
 }
 
-func (r *RefreshTokenModel) Hydrate(
+// PopulateRefreshToken creates a new refresh token and hydrates it with the given data
+func PopulateRefreshToken(
 	userId string,
 	createdAt time.Time,
 	expiresAt time.Time,
-	token string,
 	revoked bool,
-	revokedAt time.Time) error {
-	r.UserId = types.Id(userId)
-	r.CreatedAt = types.Timestamp(createdAt)
-	r.ExpiresAt = types.Timestamp(expiresAt)
-	r.Token = types.Code(token)
-	r.Revoked = revoked
-	r.RevokedAt = types.Timestamp(revokedAt)
-	return nil
+	revokedAt time.Time,
+	token string) RefreshTokenModel {
+	return RefreshTokenModel{
+		UserId:    types.Id(userId),
+		CreatedAt: types.Timestamp(createdAt),
+		ExpiresAt: types.Timestamp(expiresAt),
+		Token:     types.Code(token),
+		Revoked:   revoked,
+		RevokedAt: types.Timestamp(revokedAt),
+	}
 }
 
 func (r *RefreshTokenModel) IsExpired() bool {
