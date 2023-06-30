@@ -1,12 +1,11 @@
 package model
 
 import (
-	"errors"
-	"fmt"
 	"iam/src/core/domain/types"
 	"time"
 )
 
+// EmailVerificationCodeModel represents a verification code for an email address
 type EmailVerificationCodeModel struct {
 	UserId    types.Id
 	Code      types.Code
@@ -14,14 +13,14 @@ type EmailVerificationCodeModel struct {
 	ExpiresAt types.Timestamp
 }
 
-func NewVerificationCodeModel(userId types.Id) (EmailVerificationCodeModel, error) {
+// NewEmailVerificationCode creates a new email verification code
+func NewEmailVerificationCode(userId types.Id) (EmailVerificationCodeModel, error) {
 	timestamp := types.NewTimestamp()
 
 	code, err := types.NewCode()
 
 	if err != nil {
-		fmt.Println(err)
-		return EmailVerificationCodeModel{}, errors.New("SERVER_ERROR")
+		return EmailVerificationCodeModel{}, err
 	}
 
 	return EmailVerificationCodeModel{
@@ -32,14 +31,20 @@ func NewVerificationCodeModel(userId types.Id) (EmailVerificationCodeModel, erro
 	}, nil
 }
 
-func (v *EmailVerificationCodeModel) Hydrate(userId string, code string, createdAt time.Time, expiresAt time.Time) {
-	v.UserId = types.Id(userId)
-	v.Code = types.Code(code)
-	v.CreatedAt = types.Timestamp(createdAt)
-	v.ExpiresAt = types.Timestamp(expiresAt)
+// PopulateEmailVerificationCode creates a new email verification code and hydrates it with the given data
+func PopulateEmailVerificationCode(
+	userId string,
+	code string,
+	createdAt time.Time,
+	expiresAt time.Time) EmailVerificationCodeModel {
+	return EmailVerificationCodeModel{
+		UserId:    types.Id(userId),
+		Code:      types.Code(code),
+		CreatedAt: types.Timestamp(createdAt),
+		ExpiresAt: types.Timestamp(expiresAt),
+	}
 }
 
 func (v *EmailVerificationCodeModel) IsExpired() bool {
-	timeNow := types.NewTimestamp()
-	return v.ExpiresAt.IsBefore(timeNow)
+	return v.ExpiresAt.IsBefore(types.NewTimestamp())
 }

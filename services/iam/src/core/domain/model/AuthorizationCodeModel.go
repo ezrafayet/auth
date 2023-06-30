@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"iam/src/core/domain/types"
 	"time"
 )
@@ -20,7 +19,6 @@ func NewAuthorizationCode(userId types.Id) (AuthorizationCodeModel, error) {
 	code, err := types.NewCode()
 
 	if err != nil {
-		fmt.Println(err)
 		return AuthorizationCodeModel{}, err
 	}
 

@@ -56,7 +56,7 @@ func (e *EmailVerificationService) Send(args primaryports.SendVerificationCodeAr
 		return errors.New(apperrors.LimitExceeded)
 	}
 
-	verificationCode, err := model.NewVerificationCodeModel(userId)
+	verificationCode, err := model.NewEmailVerificationCode(userId)
 
 	if err != nil {
 		return err

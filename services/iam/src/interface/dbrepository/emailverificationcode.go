@@ -44,7 +44,6 @@ func (v *VerificationCodeRepository) CountActiveCodes(userId types.Id) (int, err
 }
 
 func (v *VerificationCodeRepository) GetCode(code types.Code) (model.EmailVerificationCodeModel, error) {
-	var verificationCode model.EmailVerificationCodeModel
 	var userId string
 	var createdAt time.Time
 	var expiresAt time.Time
@@ -60,7 +59,7 @@ func (v *VerificationCodeRepository) GetCode(code types.Code) (model.EmailVerifi
 		return model.EmailVerificationCodeModel{}, errors.New(apperrors.VerificationCodeNotFound)
 	}
 
-	verificationCode.Hydrate(userId, string(code), createdAt, expiresAt)
+	verificationCode := model.PopulateEmailVerificationCode(userId, string(code), createdAt, expiresAt)
 
 	return verificationCode, nil
 }
