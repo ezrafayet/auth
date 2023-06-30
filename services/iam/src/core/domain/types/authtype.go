@@ -32,6 +32,6 @@ func ParseAndValidateAuthType(authMethod string) (AuthType, error) {
 	case authTypesNames[AuthTypeMagicLink]:
 		return AuthTypeMagicLink, nil
 	default:
-		return 127, errors.New(apperrors.InvalidAuthType)
+		return 0, errors.New(apperrors.InvalidAuthType)
 	}
 }

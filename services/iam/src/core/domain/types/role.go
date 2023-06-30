@@ -8,11 +8,16 @@ import (
 type Role int8
 
 const (
-	RoleAdmin Role = iota
+	RoleAdmin Role = iota + 1
 	RoleUser
 )
 
-var rolesNames = []string{"admin", "user"}
+// var rolesNames = []string{"admin", "user"}
+
+var rolesNames = map[Role]string{
+	RoleAdmin: "admin",
+	RoleUser:  "user",
+}
 
 func (r Role) String() string {
 	if r < RoleAdmin || r > RoleUser {
@@ -29,6 +34,6 @@ func ParseAndValidateRole(role string) (Role, error) {
 	case rolesNames[RoleUser]:
 		return RoleUser, nil
 	default:
-		return 127, errors.New(apperrors.InvalidRole)
+		return 0, errors.New(apperrors.InvalidRole)
 	}
 }
