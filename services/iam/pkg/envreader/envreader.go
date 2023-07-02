@@ -2,13 +2,15 @@ package envreader
 
 import (
 	"bufio"
+	"errors"
+	"fmt"
 	"os"
 	"strings"
 )
 
 // LoadFromFile reads variables from .env file and sets them as environment variables
-// This reader is very basic, it only supports the format key = value, with no quotes, no multiline
-// variables, no trailing comments.
+// /!\ This reader is very basic. It only supports the multiline format key = value, with no quotes and
+// no trailing comments.
 func LoadFromFile() {
 	// The .env is copied to the container during the build process
 	// This is not best practise and will need to change and be set differently
@@ -36,6 +38,13 @@ func LoadFromFile() {
 }
 
 func CheckRequiredEnv() error {
-	// todo: check if envs are set
+	requestedEnvs := []string{"ENV", "REGION", "PORT", "DATABASE_CONNECTION_STRING", "JWT_PRIVATE_KEY"}
+
+	for _, e := range requestedEnvs {
+		if os.Getenv(e) == "" {
+			return errors.New(fmt.Sprintf("environment variable %s not set", e))
+		}
+	}
+
 	return nil
 }

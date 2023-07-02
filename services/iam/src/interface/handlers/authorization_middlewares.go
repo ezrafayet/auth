@@ -8,6 +8,16 @@ import (
 	"net/http"
 )
 
+func (h *AuthorizationHandler) VerifyCaptcha(nextHandler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// todo: implement
+
+		nextHandler.ServeHTTP(w, r)
+
+		return
+	})
+}
+
 // VerifyAccessToken refuses access if there is no access token or if it is not valid
 func (h *AuthorizationHandler) VerifyAccessToken(nextHandler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

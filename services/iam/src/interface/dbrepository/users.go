@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/lib/pq"
 	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
-	"time"
 )
 
 type UsersRepository struct {
@@ -84,8 +85,6 @@ func (r *UsersRepository) SaveUser(
 }
 
 func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
-	var user model.UserModel
-
 	var (
 		createdAt           time.Time
 		username            string
@@ -103,7 +102,7 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 	if txErr != nil {
 		fmt.Println(txErr)
 		// todo: handle error better
-		return user, errors.New(apperrors.UserNotFound)
+		return model.UserModel{}, errors.New(apperrors.UserNotFound)
 	}
 
 	var parsedEmailValidatedAt time.Time
@@ -118,18 +117,12 @@ func (r *UsersRepository) GetUserById(id types.Id) (model.UserModel, error) {
 		parsedDeletedAt = deletedAt.Time
 	}
 
-	err := user.Hydrate(string(id), createdAt, username, usernameFingerprint, email, emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
-
-	if err != nil {
-		return user, err
-	}
+	user := model.PopulateUser(string(id), createdAt, username, usernameFingerprint, email, emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
 
 	return user, nil
 }
 
 func (r *UsersRepository) GetUserByEmail(email types.Email) (model.UserModel, error) {
-	var user model.UserModel
-
 	var (
 		id                  types.Id
 		createdAt           time.Time
@@ -147,7 +140,7 @@ func (r *UsersRepository) GetUserByEmail(email types.Email) (model.UserModel, er
 	if txErr != nil {
 		fmt.Println(txErr)
 		// todo: handle error better
-		return user, errors.New(apperrors.UserNotFound)
+		return model.UserModel{}, errors.New(apperrors.UserNotFound)
 	}
 
 	var parsedEmailValidatedAt time.Time
@@ -162,11 +155,7 @@ func (r *UsersRepository) GetUserByEmail(email types.Email) (model.UserModel, er
 		parsedDeletedAt = deletedAt.Time
 	}
 
-	err := user.Hydrate(string(id), createdAt, username, usernameFingerprint, string(email), emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
-
-	if err != nil {
-		return user, err
-	}
+	user := model.PopulateUser(string(id), createdAt, username, usernameFingerprint, string(email), emailVerified, parsedEmailValidatedAt, blocked, deleted, parsedDeletedAt)
 
 	return user, nil
 }

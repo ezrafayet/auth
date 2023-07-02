@@ -12,7 +12,7 @@ type UserMarketingPreferencesModel struct {
 	UpdatedNewsletterAt types.Timestamp
 }
 
-func NewUserMarketingPreferencesModel(userId types.Id) UserMarketingPreferencesModel {
+func NewUserMarketingPreferences(userId types.Id) UserMarketingPreferencesModel {
 	return UserMarketingPreferencesModel{
 		UserId:              userId,
 		AcceptedMarketing:   false,

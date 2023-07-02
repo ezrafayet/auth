@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+
 	"iam/pkg/apperrors"
 	"iam/src/core/domain/types"
 )
@@ -14,7 +15,7 @@ type UserTermsAndConditionsModel struct {
 	UserData     string
 }
 
-func NewUserTermsAndConditionsModel(userId types.Id) UserTermsAndConditionsModel {
+func NewUserTermsAndConditions(userId types.Id) UserTermsAndConditionsModel {
 	return UserTermsAndConditionsModel{
 		UserId:   userId,
 		Accepted: false,

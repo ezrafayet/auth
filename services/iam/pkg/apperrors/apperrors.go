@@ -26,6 +26,11 @@ var (
 	FeatureDisabled     = "FEATURE_DISABLED"
 )
 
+// Flags not enabled
+var (
+	MagicLinkNotEnabled = "MAGIC_LINK_NOT_ENABLED"
+)
+
 // Database errors
 var (
 	UsernameAlreadyExists = "USERNAME_ALREADY_EXISTS"

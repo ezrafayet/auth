@@ -1,8 +1,9 @@
 package model
 
 import (
-	"iam/src/core/domain/types"
 	"time"
+
+	"iam/src/core/domain/types"
 )
 
 type UserModel struct {
@@ -18,7 +19,7 @@ type UserModel struct {
 	DeletedAt           types.Timestamp
 }
 
-func NewUserModel(username types.Username, email types.Email, timestamp types.Timestamp) UserModel {
+func NewUser(username types.Username, email types.Email, timestamp types.Timestamp) UserModel {
 	return UserModel{
 		Id:                  types.NewId(),
 		CreatedAt:           timestamp,
@@ -31,7 +32,7 @@ func NewUserModel(username types.Username, email types.Email, timestamp types.Ti
 	}
 }
 
-func (u *UserModel) Hydrate(
+func PopulateUser(
 	id string,
 	createdAt time.Time,
 	username string,
@@ -41,18 +42,19 @@ func (u *UserModel) Hydrate(
 	emailVerifiedAt time.Time,
 	blocked bool,
 	deleted bool,
-	deletedAt time.Time) error {
-	u.Id = types.Id(id)
-	u.CreatedAt = types.Timestamp(createdAt)
-	u.Username = types.Username(username)
-	u.UsernameFingerprint = types.UsernameFingerprint(usernameFingerprint)
-	u.Email = types.Email(email)
-	u.EmailVerified = emailVerified
-	u.EmailVerifiedAt = types.Timestamp(emailVerifiedAt)
-	u.Blocked = blocked
-	u.Deleted = deleted
-	u.DeletedAt = types.Timestamp(deletedAt)
-	return nil
+	deletedAt time.Time) UserModel {
+	return UserModel{
+		Id:                  types.Id(id),
+		CreatedAt:           types.Timestamp(createdAt),
+		Username:            types.Username(username),
+		UsernameFingerprint: types.UsernameFingerprint(usernameFingerprint),
+		Email:               types.Email(email),
+		EmailVerified:       emailVerified,
+		EmailVerifiedAt:     types.Timestamp(emailVerifiedAt),
+		Blocked:             blocked,
+		Deleted:             deleted,
+		DeletedAt:           types.Timestamp(deletedAt),
+	}
 }
 
 func (u *UserModel) IsBlocked() bool {

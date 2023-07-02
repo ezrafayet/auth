@@ -2,6 +2,9 @@ package httpserver
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
@@ -10,8 +13,6 @@ import (
 	"iam/src/infra/database"
 	"iam/src/infra/emailprovider"
 	"iam/src/infra/registry"
-	"net/http"
-	"os"
 )
 
 func init() {
@@ -19,9 +20,7 @@ func init() {
 		envreader.LoadFromFile()
 	}
 
-	err := envreader.CheckRequiredEnv()
-
-	if err != nil {
+	if err := envreader.CheckRequiredEnv(); err != nil {
 		panic(err)
 	}
 }
@@ -41,11 +40,11 @@ func Start() error {
 
 	// User management endpoints
 
-	router.Get("/api/internal/v1/auth/whoami", nil)
+	router.Get("/api/internal/v1/auth/whoami", nil /*todo: implement*/)
 
 	router.
-		With(r.AuthorizationHandler.VerifyFeatureFlags([]string{"ENABLE_AUTH_WITH_MAGIC_LINK"})).
-		Post("/api/internal/v1/auth/register/magic-link", r.UsersHandler.Register)
+		With(r.AuthorizationHandler.VerifyCaptcha).
+		Post("/api/internal/v1/auth/register", r.UsersHandler.Register)
 
 	// Email verification endpoints
 
@@ -76,7 +75,7 @@ func Start() error {
 	// /!\ This endpoint can issue an authorization code
 	router.Post("/api/internal/v1/auth/token/refresh", r.AuthorizationHandler.Refresh)
 
-	// Other endpoints
+	// Authorization endpoints
 
 	router.
 		With(r.AuthorizationHandler.VerifyAccessToken).

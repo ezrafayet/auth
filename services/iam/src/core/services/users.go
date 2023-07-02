@@ -2,6 +2,8 @@ package services
 
 import (
 	"errors"
+	"os"
+
 	"iam/pkg/apperrors"
 	"iam/src/core/domain/model"
 	"iam/src/core/domain/types"
@@ -31,6 +33,10 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 		return primaryports.RegisterAnswer{}, err
 	}
 
+	if args.AuthType == types.AuthTypeMagicLink.String() && os.Getenv("ENABLE_AUTH_WITH_MAGIC_LINK") != "true" {
+		return primaryports.RegisterAnswer{}, errors.New(apperrors.MagicLinkNotEnabled)
+	}
+
 	email, err := types.ParseAndValidateEmail(args.Email)
 
 	if err != nil {
@@ -47,11 +53,11 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 		return primaryports.RegisterAnswer{}, errors.New(apperrors.RefusedTerms)
 	}
 
-	user := model.NewUserModel(username, email, types.NewTimestamp())
+	user := model.NewUser(username, email, types.NewTimestamp())
 
 	userAuthMethod := model.NewUserMagicLinkAuth(user.Id, authType)
 
-	termsAndConditions := model.NewUserTermsAndConditionsModel(user.Id)
+	termsAndConditions := model.NewUserTermsAndConditions(user.Id)
 
 	err = termsAndConditions.Accept(args.HasAcceptedTerms, args.AcceptedTermsVersion)
 
@@ -59,7 +65,7 @@ func (s *UsersService) Register(args primaryports.RegisterArgs) (primaryports.Re
 		return primaryports.RegisterAnswer{}, err
 	}
 
-	marketingPreferences := model.NewUserMarketingPreferencesModel(user.Id)
+	marketingPreferences := model.NewUserMarketingPreferences(user.Id)
 
 	if args.HasAcceptedNewsletter {
 		marketingPreferences.AcceptNewsletter()
