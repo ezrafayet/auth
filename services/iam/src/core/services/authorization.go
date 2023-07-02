@@ -27,6 +27,16 @@ func NewAuthorizationService(
 	}
 }
 
+func (a *AuthorizationService) AreFeaturesEnabled(args primaryports.AreFeaturesEnabledArgs) (primaryports.AreFeaturesEnabledAnswer, error) {
+	for _, f := range args.FlagsNeeded {
+		if os.Getenv(f) != "true" {
+			return primaryports.AreFeaturesEnabledAnswer{Active: false}, nil
+		}
+	}
+
+	return primaryports.AreFeaturesEnabledAnswer{Active: true}, nil
+}
+
 func (a *AuthorizationService) IsAccessTokenValid(args primaryports.IsAccessTokenValidArgs) (primaryports.IsAccessTokenValidAnswer, error) {
 	if args.AuthorisationHeader == "" {
 		return primaryports.IsAccessTokenValidAnswer{Valid: false}, nil
@@ -103,13 +113,16 @@ func (a *AuthorizationService) RefreshAccessToken(args primaryports.RefreshAcces
 	}, nil
 }
 
-func (a *AuthorizationService) AreFeaturesEnabled(args primaryports.AreFeaturesEnabledArgs) (primaryports.AreFeaturesEnabledAnswer, error) {
-
-	for _, f := range args.FlagsNeeded {
-		if os.Getenv(f) != "true" {
-			return primaryports.AreFeaturesEnabledAnswer{Active: false}, nil
-		}
+func (a *AuthorizationService) IsCaptchaValid(args primaryports.IsCaptchaValidArgs) (primaryports.IsCaptchaValidAnswer, error) {
+	if os.Getenv("ENABLE_CAPTCHA") != "true" {
+		return primaryports.IsCaptchaValidAnswer{Valid: true}, nil
 	}
 
-	return primaryports.AreFeaturesEnabledAnswer{Active: true}, nil
+	if args.CaptchaResponse == "" {
+		return primaryports.IsCaptchaValidAnswer{Valid: false}, nil
+	}
+
+	// todo: implement captcha validation
+
+	return primaryports.IsCaptchaValidAnswer{Valid: false}, nil
 }

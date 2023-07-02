@@ -75,3 +75,11 @@ type AreFeaturesEnabledArgs struct {
 type AreFeaturesEnabledAnswer struct {
 	Active bool `json:"active"`
 }
+
+type IsCaptchaValidArgs struct {
+	CaptchaResponse string `json:"captchaResponse"`
+}
+
+type IsCaptchaValidAnswer struct {
+	Valid bool `json:"valid"`
+}

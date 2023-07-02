@@ -24,6 +24,7 @@ var (
 	InvalidAccessToken  = "INVALID_ACCESS_TOKEN"
 	InvalidRefreshToken = "INVALID_REFRESH_TOKEN"
 	FeatureDisabled     = "FEATURE_DISABLED"
+	InvalidCaptcha      = "INVALID_CAPTCHA"
 )
 
 // Flags not enabled
