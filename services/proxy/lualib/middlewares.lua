@@ -2,41 +2,19 @@
 
 local _M = {}
 
-function set_headers_forwarded_for()
+-- sets headers that must be passed to the upstream services
+function _M.set_headers()
     ngx.req.set_header("X-Forwarded-For", ngx.var.remote_addr)
-end
-
-function set_headers_forwarded_proto()
     ngx.req.set_header("X-Forwarded-Proto", ngx.var.scheme)
-end
-
-function set_headers_content_type_options()
     ngx.req.set_header("X-Content-Type-Options", "nosniff")
-end
-
-function set_headers_frame_options()
     ngx.req.set_header("X-Frame-Options", "DENY")
-end
-
-function set_headers_xss_protection()
     ngx.req.set_header("X-XSS-Protection", "1; mode=block")
-end
-
-function set_headers_request_id ()
     ngx.req.set_header("X-Request-Id", ngx.var.request_id)
 end
 
--- sets headers that must be passed to the upstream services
-function _M.set_headers()
-    set_headers_forwarded_for()
-    set_headers_forwarded_proto()
-    set_headers_content_type_options()
-    set_headers_frame_options()
-    set_headers_xss_protection()
-    set_headers_request_id()
-end
-
--- todo: must be testable and tested
+-- checks if the request is authorized.
+-- it only checks if the authorization header is valid
+-- it is not resource-specific
 function _M.control_access_token()
     local res = ngx.location.capture("/api/internal/v1/auth/token/authorize", { method = ngx.HTTP_POST })
 
@@ -46,14 +24,9 @@ function _M.control_access_token()
         return
     end
 
-    if res.status < 200 or res.status >= 400 then
-        ngx.status = res.status
-        ngx.say(res.body)
-        ngx.exit(res.status)
-        return
-    end
-
-    return ngx.OK
+    ngx.status = res.status
+    ngx.say(res.body)
+    ngx.exit(res.status)
 end
 
 return _M
