@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default () => {
     async function logout () {
-        const answer = await fetch("/api/internal/v1/auth/logout", {
+        const answer = await fetch("/api/v1/auth/logout", {
             method: "POST",
         })
     }

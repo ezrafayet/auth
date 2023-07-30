@@ -10,7 +10,7 @@ export default (props) => {
         (async () => {
             if (verificationCode) {
                 const unencodedVerificationCode = decodeUrlSafeBase64(verificationCode);
-                const answer = await fetch("/api/internal/v1/auth/email-verification/confirm", {
+                const answer = await fetch("/api/v1/auth/email-verification/confirm", {
                     method: "PATCH",
                     body: JSON.stringify({ "verificationCode": unencodedVerificationCode })
                 })
@@ -20,7 +20,7 @@ export default (props) => {
                     return;
                 }
                 const authorizationCode = answerJson.data.authorizationCode;
-                const answer2 = await fetch("/api/internal/v1/auth/token", {
+                const answer2 = await fetch("/api/v1/auth/token", {
                     method: "POST",
                     body: JSON.stringify({ "authorizationCode": authorizationCode })
                 })

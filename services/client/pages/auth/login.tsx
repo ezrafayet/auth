@@ -5,7 +5,7 @@ export default () => {
     const [email, setEmail] = useState("");
 
     async function login () {
-        const answer = await fetch("/api/internal/v1/auth/magic-link", {
+        const answer = await fetch("/api/v1/auth/magic-link", {
             method: "POST",
             body: JSON.stringify({ email })
         })

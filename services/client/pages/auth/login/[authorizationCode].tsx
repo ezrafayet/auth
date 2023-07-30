@@ -10,7 +10,7 @@ export default (props) => {
         (async () => {
             if (authorizationCode) {
                 const unencodedCode = decodeUrlSafeBase64(authorizationCode);
-                const answer = await fetch("/api/internal/v1/auth/token", {
+                const answer = await fetch("/api/v1/auth/token", {
                     method: "POST",
                     body: JSON.stringify({ "authorizationCode": unencodedCode })
                 })

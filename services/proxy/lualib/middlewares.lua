@@ -24,7 +24,7 @@ end
 -- It does not verify the token's permissions against a specific resource.
 -- The endpoint it calls must not expose sensitive data as the response is passed to the client.
 function _M.control_access_token()
-    local res = ngx.location.capture("/api/internal/v1/auth/token/authorize", { method = ngx.HTTP_POST })
+    local res = ngx.location.capture("/api/v1/auth/token/authorize", { method = ngx.HTTP_POST })
 
     if not res then
         ngx.say("{\"status\": \"error\", \"message\": \"Internal server error\"}")
