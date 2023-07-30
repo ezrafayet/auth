@@ -12,8 +12,7 @@
 
 2. Run with docker:
 ```
-docker-compose build
-docker-compose up
+docker-compose build && docker-compose up
 ```
 
 Then navigate to: http://localhost:5050
