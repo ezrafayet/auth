@@ -38,48 +38,62 @@ func Start() error {
 
 	router.Use(middleware.Logger)
 
-	// User management endpoints
+	// Route: GET /api/internal/v1/auth/whoami
+	// It:    Provides detailed information about the authenticated user, or return anonymous.
+	router.Get("/api/v1/auth/whoami", nil /*todo: implement*/)
 
-	router.Get("/api/internal/v1/auth/whoami", nil /*todo: implement*/)
-
+	// Route: POST /api/internal/v1/auth/register
+	// It:    Creates a new user.
 	router.
 		With(r.AuthorizationHandler.VerifyCaptcha).
-		Post("/api/internal/v1/auth/register", r.UsersHandler.Register)
+		Post("/api/v1/auth/register", r.UsersHandler.Register)
 
-	// Email verification endpoints
+	// Route: POST /api/internal/v1/auth/email-verification/send
+	// It:    Sends a verification email to the user.
+	//
+	// /!\    This endpoint can issue a verification code through email
+	router.Post("/api/v1/auth/email-verification/send", r.VerificationCodeHandler.SendVerificationEmail)
 
-	// /!\ This endpoint can issue a verification code
-	router.Post("/api/internal/v1/auth/email-verification/send", r.VerificationCodeHandler.SendVerificationEmail)
+	// Route: PATCH /api/internal/v1/auth/email-verification/confirm
+	// It:    Confirms the email address of the user.
+	//
+	// /!\    This endpoint can issue an authorization code in its answer
+	router.Patch("/api/v1/auth/email-verification/confirm", r.VerificationCodeHandler.ConfirmEmail)
 
-	// /!\ This endpoint can issue an authorization code
-	router.Patch("/api/internal/v1/auth/email-verification/confirm", r.VerificationCodeHandler.ConfirmEmail)
-
-	// Authentication endpoints
-
-	// /!\ This endpoint can issue an authorization code
-	// /!\ This endpoint can issue a userId if email is not verified
+	// Route: POST /api/internal/v1/auth/magic-link
+	// It:    Sends a magic link to the user.
+	//
+	// /!\    This endpoint can issue an authorization code via email
 	router.
 		With(r.AuthorizationHandler.VerifyFeatureFlags([]string{"ENABLE_AUTH_WITH_MAGIC_LINK"})).
-		Post("/api/internal/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
+		Post("/api/v1/auth/magic-link", r.AuthenticationHandler.SendMagicLink)
 
-	// /!\ This endpoint can issue an access and a refresh token
-	// /!\ This is the only endpoint that can issue those tokens, in exchange for an authorization code
-	router.Post("/api/internal/v1/auth/token", r.AuthenticationHandler.Authenticate)
+	// Route: POST /api/internal/v1/auth/token
+	// It:    Authenticates the user by trading an access token and a refresh token an authorization code for.
+	//
+	// /!\    This endpoint can issue an access token and a refresh token in exchange for an authorization code
+	// /!\    This is the only endpoint that can issue those tokens, in exchange for an authorization code
+	router.Post("/api/v1/auth/token", r.AuthenticationHandler.Authenticate)
 
+	// Route: POST /api/v1/auth/token/authorize
+	// It:    Verifies the validity of an access token.
 	router.
 		With(r.AuthorizationHandler.VerifyAccessToken).
-		Post("/api/internal/v1/auth/token/authorize", func(w http.ResponseWriter, r *http.Request) {
+		Post("/api/v1/auth/token/authorize", func(w http.ResponseWriter, r *http.Request) {
 			httphelpers.WriteSuccess(http.StatusAccepted, "Access token valid", struct{}{})(w, r)
 		})
 
-	// /!\ This endpoint can issue an authorization code
-	router.Post("/api/internal/v1/auth/token/refresh", r.AuthorizationHandler.Refresh)
+	// todo: logout
 
-	// Authorization endpoints
+	// Route: POST /api/v1/auth/token/refresh
+	// It:    Refreshes the access token of the user.
+	//
+	// /!\ This endpoint can issue an authorization code
+	router.Post("/api/v1/auth/token/refresh", r.AuthorizationHandler.Refresh)
 
 	router.
 		With(r.AuthorizationHandler.VerifyAccessToken).
-		Get("/api/internal/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
+		Get("/api/v1/auth/foobar", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("headers", r.Header.Get("X-Request-Id"))
 			httphelpers.WriteSuccess(http.StatusOK, "Foobar", struct{}{})(w, r)
 		})
