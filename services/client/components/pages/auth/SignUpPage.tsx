@@ -18,11 +18,6 @@ export default () => {
 
     const router = useRouter();
 
-    useEffect(() => {
-        const email = router.query.email;
-        setEmail(email as string);
-    }, [])
-
     const [success, setSuccess] = useState(false);
     const [code, setCode] = useState("");
 
@@ -62,69 +57,77 @@ export default () => {
         </div>
     }
 
-    return <div className={"w-screen flex flex-col justify-center items-center"}>
+    return <div>
+        <Spacer className={"mt-2 ml-3"}>
+            <Link href={"/"}>
+                <LinkButton text={"Back"} onClick={null} />
+            </Link>
+        </Spacer>
 
         <p>
             <br/>
         </p>
 
-        <Form onSubmit={(e) => {
-            e.preventDefault()
-            alert("Yo")
-        }}>
-            <h1 className={"my-5 font-bold text-lg"}>Create an account</h1>
+            <div className={"w-screen flex flex-col justify-center items-center"}>
 
-            <Spacer className={"flex justify-center items-center place-items-center text-sm w-full mt-3 mb-5"}>
-                Note a valid email is needed to verify your account.
-            </Spacer>
+            <Form onSubmit={(e) => {
+                e.preventDefault()
+                alert("Yo")
+            }}>
+                <h1 className={"my-5 font-bold text-lg"}>Create an account</h1>
+
+                <Spacer className={"flex justify-center items-center place-items-center text-sm w-full mt-3 mb-5"}>
+                    Note a valid email is needed to verify your account.
+                </Spacer>
 
 
-            <Spacer className={"my-2 w-full"}>
-                <TextInput label={"email"}
-                           placeHolder={""}
-                           value={email}
-                           type={"email"}
-                           required={true}
-                           onChange={(v: string) => setEmail(v)} fullWidth/>
-            </Spacer>
-
-            <Spacer className={"my-2 w-full"}>
-                <TextInput label={"username"}
-                           placeHolder={""}
-                           value={username}
-                           required={true}
-                           onChange={(v: string) => setUsername(v)} fullWidth/>
-            </Spacer>
-
-            <Spacer className={"mb-1 mt-4 w-full"}>
                 <Spacer className={"my-2 w-full"}>
-                    <Checkbox text={"I wish to receive marketing emails"}
-                              checked={marketing}
-                              onChange={() => setMarketing((ps) => !ps)}/>
+                    <TextInput label={"email"}
+                               placeHolder={""}
+                               value={email}
+                               type={"email"}
+                               required={true}
+                               onChange={(v: string) => setEmail(v)} fullWidth/>
                 </Spacer>
 
                 <Spacer className={"my-2 w-full"}>
-                    <Checkbox text={"I have read and approved terms and conditions and privacy policy"}
-                              checked={termsAndConditions}
-                              required={true}
-                              onChange={() => setTermsAndConditions((ps) => !ps)}/>
+                    <TextInput label={"username"}
+                               placeHolder={""}
+                               value={username}
+                               required={true}
+                               onChange={(v: string) => setUsername(v)} fullWidth/>
                 </Spacer>
-            </Spacer>
 
-            <Spacer className={"mb-2 mt-5 w-full"}>
-                <Button text={"Sign Up"} submit={true} fullWidth/>
-            </Spacer>
+                <Spacer className={"mb-1 mt-4 w-full"}>
+                    <Spacer className={"my-2 w-full"}>
+                        <Checkbox text={"I wish to receive marketing emails"}
+                                  checked={marketing}
+                                  onChange={() => setMarketing((ps) => !ps)}/>
+                    </Spacer>
 
-            <hr className={"border-gray-300 w-full mt-7 mb-3"}/>
+                    <Spacer className={"my-2 w-full"}>
+                        <Checkbox text={"I have read and approved terms and conditions and privacy policy"}
+                                  checked={termsAndConditions}
+                                  required={true}
+                                  onChange={() => setTermsAndConditions((ps) => !ps)}/>
+                    </Spacer>
+                </Spacer>
 
-            <Spacer className={"my-5 text-gray-400"}>
-                Already have an account? <Link href={`/auth/login?email=${email}`}>
-                <LinkButton text={"Login"}/>
-            </Link>
-            </Spacer>
+                <Spacer className={"mb-2 mt-5 w-full"}>
+                    <Button text={"Sign Up"} submit={true} fullWidth/>
+                </Spacer>
 
-        </Form>
+                <hr className={"border-gray-300 w-full mt-7 mb-3"}/>
 
-        <br/><br/>
+                <Spacer className={"my-5 text-gray-400"}>
+                    Already have an account? <Link href={`/auth/login`}>
+                    <LinkButton text={"Login"}/>
+                </Link>
+                </Spacer>
+
+            </Form>
+
+            <br/><br/>
+        </div>
     </div>
 }

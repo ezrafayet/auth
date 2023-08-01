@@ -13,11 +13,6 @@ export default () => {
 
     const router = useRouter();
 
-    useEffect(() => {
-        const email = router.query.email;
-        setEmail(email as string);
-    }, [])
-
     async function login () {
         const answer = await fetch("/api/v1/auth/magic-link", {
             method: "POST",
@@ -30,12 +25,19 @@ export default () => {
         }
     }
 
-    return <div className={"w-screen flex flex-col justify-center items-center"}>
+    return <div>
+
+        <Spacer className={"mt-2 ml-3"}>
+            <Link href={"/"}>
+                <LinkButton text={"Back"} onClick={null} />
+            </Link>
+        </Spacer>
 
         <p>
             <br/>
         </p>
 
+        <div className={"w-screen flex flex-col justify-center items-center"}>
         <Form onSubmit={(e) => {
             e.preventDefault()
             alert("Yo")
@@ -59,14 +61,18 @@ export default () => {
                 <Button text={"Login"} submit={true} fullWidth/>
             </Spacer>
 
+            {/*<Spacer className={"text-pink-600 font-semibold text-sm"}>*/}
+            {/*    <div>This is an error man</div>*/}
+            {/*</Spacer>*/}
+
             <hr className={"border-gray-300 w-full mt-7 mb-3"}/>
 
             <Spacer className={"my-5 text-gray-400"}>
-                Do not have an account? <Link href={`/auth/sign-up?email=${email}`}>
+                Do not have an account? <Link href={`/auth/sign-up`}>
                 <LinkButton text={"Sign up"}/>
             </Link>
             </Spacer>
 
         </Form>
-    </div>
+    </div></div>
 }

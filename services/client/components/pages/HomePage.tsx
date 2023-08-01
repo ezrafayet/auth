@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Button from "../form/Button";
+import Spacer from "../form/Spacer";
 
 export default () => {
     async function logout () {
@@ -8,16 +9,18 @@ export default () => {
         })
     }
 
-    return <>
-        <h1 className={"text-3xl font-bold underline"}>Home</h1>
-        <Link href={"/auth/sign-up"}>
-            <Button text={"Sign Up"} />
-        </Link>
-        <Link href={"/auth/login"}>
-            <Button text={"Login"} />
-        </Link>
-        <Button onClick={logout} loading={true} text={"Logout"} disabled={true} />
+    return <div className={"w-screen min-h-screen flex justify-center items-center"}>
+        <Spacer className={"m-2"}>
+            <Link href={"/auth/sign-up"}>
+                <Button text={"Sign Up"} />
+            </Link>
+        </Spacer>
+
+        {/*<Spacer className={"m-2"}>*/}
+        {/*    <Link href={"/auth/login"}>*/}
+        {/*        <Button text={"Login"} />*/}
+        {/*    </Link>*/}
+        {/*</Spacer>*/}
         <br/>
-        <Button text={"Yoman"} fullWidth={true} />
-    </>
+    </div>
 }
